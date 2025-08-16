@@ -1,0 +1,9 @@
+RewriteEngine On
+
+# assets/파일명/get/ 를 assets/get/index.php?file=파일명으로 리다이렉트
+RewriteRule ^assets/([^/]+)/get/?$ assets/get/index.php?file=$1 [L,QSA]
+
+# CORS 헤더 (필요시)
+<IfModule mod_headers.c>
+Header set Access-Control-Allow-Origin "*"
+</IfModule>
