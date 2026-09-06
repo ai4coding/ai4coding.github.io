@@ -1,0 +1,832 @@
+import { loadLanguage, languages, translate, updatePageText, getLanguage, resolveLang } from './utils/i18n.js';
+import { logMessage, logDataMessage, downloadCSV, handleVisibilityChange, flushLogBuffer, saveSession, loadSession, clearSession, showToast, filterLogLines } from './utils/helpers.js';
+import * as ChartHandler from './visualization/chart-handler.js';
+import * as GaugeDash from './visualization/gauge-dash.js';
+import * as Serial from './core/serial.js';
+import { sendSerial } from './core/serial.js';
+import * as BLE from './core/ble.js';
+import { sendBLE } from './core/ble.js';
+import { initAnalysisUI, resetCalculusButtons } from './analysis/analysis-ui.js';
+import { checkAlarms, setAlarm, clearAllAlarms } from './utils/alarm.js';
+import { ScienceOnUploader, SON_TYPES, sonTypeLabel } from './core/science-on.js';
+
+// --- State ---
+let isLogging = false;
+let isPaused = false;
+let csvData = [];
+let sensorNames = [];
+let animationFrameId = null;
+let csvChunkIndex = 0;
+let sensorAutoDetected = false;
+let perfTimeOrigin = 0; // performance.now() reference for high-res timing
+let sessionSaveInterval = null;
+// 브릭셀AI 임베드(?embed=1): 시리얼/BLE 연결 없이 부모 창의 postMessage 로 데이터 주입
+let embedMode = (typeof location !== 'undefined') && new URLSearchParams(location.search).get('embed') === '1';
+
+// --- 지능형 과학실 ON 전송 (차트값 실시간 업로드) ---
+const sonUploader = new ScienceOnUploader();
+let sonActive = false;          // 전송 중 여부(토글)
+let sonTypes = [];              // 시리즈별 선택된 물리량 코드
+let sonLatestValues = null;     // 최신 프레임 값(processDataLine 이 저장)
+let sonValuesDirty = false;     // 마지막 전송 이후 새 값이 왔는지
+let sonSendInterval = null;     // 1초 전송 타이머(플랫폼 초 단위)
+
+// --- Sample Rate Tracking ---
+let dataPointCount = 0;
+let sampleRateInterval = null;
+let sampleRateLogInterval = null;
+let totalDataPointsFor30s = 0;
+
+// --- Constants ---
+const MAX_CSV_ROWS = 500000;
+
+// --- UI Elements ---
+const ui = {
+    connectBtn: document.getElementById('connectBtn'),
+    startBtn: document.getElementById('startLogging'),
+    pauseBtn: document.getElementById('pauseLogging'),
+    stopBtn: document.getElementById('stopLogging'),
+    sensorCountInput: document.getElementById('sensorCount'),
+    sensorInputsContainer: document.getElementById('sensorInputs'),
+    deviceTypeSelect: document.getElementById('deviceType'),
+    serialSettingsDiv: document.getElementById('serialSettings'),
+    bleSettingsDiv: document.getElementById('bleSettings'),
+    bleDeviceTypeSelect: document.getElementById('bleDeviceType'),
+    languageSelector: document.getElementById('languageSelector'),
+    baudRateSelect: document.getElementById('baudRate'),
+    delimiterSelect: document.getElementById('delimiter'),
+    individualYAxisCheckbox: document.getElementById('individualYAxis'),
+    yAxisMinInput: document.getElementById('yAxisMin'),
+    yAxisMaxInput: document.getElementById('yAxisMax'),
+    statusLed: document.getElementById('statusLed'),
+    sampleRateSpan: document.getElementById('sampleRate'),
+    logSearchInput: document.getElementById('logSearch'),
+    sonModumCode: document.getElementById('sonModumCode'),
+    sonToggleBtn: document.getElementById('sonToggleBtn'),
+    sonStatus: document.getElementById('sonStatus'),
+    sonTypeRows: document.getElementById('sonTypeRows')
+};
+
+document.addEventListener('DOMContentLoaded', async () => {
+    populateLanguageSelector();
+
+    // Resolve the UI language and LOAD its strings BEFORE anything logs, so early logs
+    // (e.g. logChartInit inside initializeChart) are localized and timestamped in the
+    // right locale instead of leaking the raw key + Korean time.
+    // - Opened from the editor (?lang=<editor locale>): use that language if BowerBird
+    //   supports it (21 langs), otherwise fall back to English — never Korean — so the
+    //   editor languages BowerBird lacks (~65 of 86) get a sensible international default.
+    // - Opened standalone (no ?lang): last manual choice > browser language > English.
+    const rawLang = new URLSearchParams(location.search).get('lang');
+    let langToLoad;
+    if (rawLang) {
+        langToLoad = resolveLang(rawLang) || 'en';
+    } else {
+        const savedLang = localStorage.getItem('selectedLanguage');
+        const browserLang = navigator.language.split('-')[0];
+        langToLoad = savedLang || (languages[browserLang] ? browserLang : 'en');
+    }
+    await loadLanguage(langToLoad); // sets currentTranslations/currentLang (no DOM/chart touch)
+
+    ChartHandler.initializeChart('dataChart');
+    initAnalysisUI();
+
+    // Apply the loaded language to the DOM + chart (needs the chart/UI to exist).
+    await changeLanguage(langToLoad);
+
+    setupEventListeners();
+    updateSensorInputs();
+    setupEmbedBridge();
+    setupScienceOn();
+    logMessage('logAppInit');
+
+    // Check for unsaved session (임베드 모드에서는 복구 프롬프트 건너뜀)
+    const savedSession = embedMode ? null : await loadSession();
+    if (savedSession && savedSession.csvData && savedSession.csvData.length > 1) {
+        const elapsed = Math.round((Date.now() - savedSession.savedAt) / 60000);
+        if (confirm((translate('sessionRestorePrompt') || `Unsaved session found (${elapsed} min ago, ${savedSession.csvData.length - 1} rows). Restore?`).replace('{minutes}', elapsed).replace('{rows}', savedSession.csvData.length - 1))) {
+            csvData = savedSession.csvData;
+            if (savedSession.sensorNames) {
+                sensorNames = savedSession.sensorNames;
+                ui.sensorCountInput.value = sensorNames.length;
+                updateSensorInputs();
+            }
+            downloadCSV(csvData, sensorNames);
+            logMessage('logSessionRestored');
+        }
+        clearSession();
+    }
+});
+
+function populateLanguageSelector() {
+    for (const [code, name] of Object.entries(languages)) {
+        const option = document.createElement('option');
+        option.value = code;
+        option.textContent = name;
+        ui.languageSelector.appendChild(option);
+    }
+}
+
+async function changeLanguage(langCode) {
+    const translations = await loadLanguage(langCode);
+    if (translations) {
+        updatePageText(translations);
+        ChartHandler.updateChartDatasets(sensorNames); // Refresh legend if needed? No, just names.
+        ChartHandler.updateChartTranslations(translations, langCode);
+        ui.languageSelector.value = langCode;
+        updateConnectionUI();
+        updateSensorInputs(); // Re-render inputs to update labels
+        updateSonTypeRows();  // 물리량 드롭다운/버튼 라벨을 새 언어로
+    }
+}
+
+function setupEventListeners() {
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    ui.languageSelector.addEventListener('change', (e) => changeLanguage(e.target.value));
+    ui.connectBtn.addEventListener('click', toggleConnection);
+    ui.deviceTypeSelect.addEventListener('change', updateConnectionUI);
+    ui.sensorCountInput.addEventListener('input', updateSensorInputs);
+    ui.startBtn.addEventListener('click', startLogging);
+    ui.pauseBtn.addEventListener('click', togglePause);
+    ui.stopBtn.addEventListener('click', stopLogging);
+
+    // Chart Export
+    const btnExportChart = document.getElementById('btnExportChart');
+    if (btnExportChart) {
+        btnExportChart.addEventListener('click', () => ChartHandler.exportChartImage());
+    }
+
+    // CSV Import
+    const csvFileInput = document.getElementById('csvFileInput');
+    const btnImportCSV = document.getElementById('btnImportCSV');
+    if (btnImportCSV && csvFileInput) {
+        btnImportCSV.addEventListener('click', () => csvFileInput.click());
+        csvFileInput.addEventListener('change', (e) => {
+            if (e.target.files[0]) {
+                importCSV(e.target.files[0]);
+                e.target.value = ''; // Reset for re-import
+            }
+        });
+    }
+
+    // CSV Export
+    const btnExportCSV = document.getElementById('btnExportCSV');
+    if (btnExportCSV) {
+        btnExportCSV.addEventListener('click', () => {
+            if (csvData.length > 1) {
+                downloadCSV(csvData, sensorNames);
+            } else {
+                showToast(translate('noDataToExport') || '저장할 데이터가 없습니다.', 'warn');
+            }
+        });
+    }
+
+    // Zoom Buttons
+    document.querySelectorAll('.chart-controls button').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const zoom = e.target.getAttribute('data-zoom');
+            ChartHandler.setZoomLevel(zoom);
+
+            // Update active state
+            document.querySelectorAll('.chart-controls button').forEach(b => b.classList.remove('active'));
+            e.target.classList.add('active');
+        });
+    });
+
+    // 4-3: Keyboard Shortcuts
+    document.addEventListener('keydown', (e) => {
+        // Ignore if user is typing in an input/textarea/select
+        const tag = e.target.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+
+        // Space: toggle pause (only when logging)
+        if (e.code === 'Space' && isLogging) {
+            e.preventDefault();
+            togglePause();
+        }
+        // Ctrl+S: start logging
+        if (e.ctrlKey && e.key === 's') {
+            e.preventDefault();
+            startLogging();
+        }
+        // Ctrl+Q: stop logging
+        if (e.ctrlKey && e.key === 'q') {
+            e.preventDefault();
+            stopLogging();
+        }
+        // Ctrl+E: export CSV
+        if (e.ctrlKey && e.key === 'e') {
+            e.preventDefault();
+            if (csvData.length > 1) downloadCSV(csvData, sensorNames);
+        }
+    });
+
+    // 4-4: Individual Y-Axis checkbox
+    if (ui.individualYAxisCheckbox) {
+        ui.individualYAxisCheckbox.addEventListener('change', (e) => {
+            ChartHandler.setIndividualYAxis(e.target.checked);
+        });
+    }
+
+    // 4-5: Y-Axis Range inputs
+    const handleYAxisRange = () => {
+        const minVal = ui.yAxisMinInput.value;
+        const maxVal = ui.yAxisMaxInput.value;
+        ChartHandler.setYAxisRange(minVal, maxVal);
+    };
+    if (ui.yAxisMinInput) ui.yAxisMinInput.addEventListener('change', handleYAxisRange);
+    if (ui.yAxisMaxInput) ui.yAxisMaxInput.addEventListener('change', handleYAxisRange);
+
+    // 4-8: Data Log Search
+    if (ui.logSearchInput) {
+        ui.logSearchInput.addEventListener('input', (e) => {
+            filterLogLines(e.target.value.trim());
+        });
+    }
+
+    // 5-1: Send Command Button
+    const btnSendCommand = document.getElementById('btnSendCommand');
+    const sendCommandInput = document.getElementById('sendCommandInput');
+    if (btnSendCommand && sendCommandInput) {
+        btnSendCommand.addEventListener('click', async () => {
+            const cmd = sendCommandInput.value;
+            if (!cmd) return;
+            if (Serial.isSerialConnected()) {
+                await sendSerial(cmd);
+            } else if (BLE.isBleConnected()) {
+                await sendBLE(cmd);
+            }
+            logMessage('logSentCommand', { command: cmd });
+            sendCommandInput.value = '';
+        });
+    }
+}
+
+function updateConnectionUI() {
+    const deviceType = ui.deviceTypeSelect.value;
+
+    // Show settings for the selected device type
+    if (deviceType === 'serial') {
+        ui.serialSettingsDiv.style.display = 'block';
+        ui.bleSettingsDiv.style.display = 'none';
+    } else {
+        ui.serialSettingsDiv.style.display = 'none';
+        ui.bleSettingsDiv.style.display = 'block';
+    }
+
+    // Update button based on selected type's connection status
+    const selectedConnected = (deviceType === 'serial') ? Serial.isSerialConnected() : BLE.isBleConnected();
+    if (selectedConnected) {
+        ui.connectBtn.textContent = translate('disconnect') || 'Disconnect';
+        ui.connectBtn.className = 'btn btn-disconnect';
+    } else {
+        const key = deviceType === 'serial' ? 'connectSerial' : 'connectBLE';
+        ui.connectBtn.setAttribute('data-translate', key);
+        ui.connectBtn.textContent = translate(key);
+        ui.connectBtn.className = 'btn btn-connect';
+    }
+}
+
+// --- Connection Handlers ---
+function updateStatusLed(state) {
+    if (!ui.statusLed) return;
+    ui.statusLed.className = 'status-led ' + state;
+}
+
+function startSampleRateTracking() {
+    dataPointCount = 0;
+    totalDataPointsFor30s = 0;
+    if (sampleRateInterval) clearInterval(sampleRateInterval);
+    sampleRateInterval = setInterval(() => {
+        if (ui.sampleRateSpan) {
+            ui.sampleRateSpan.textContent = dataPointCount > 0 ? `${dataPointCount} pts/s` : '';
+        }
+        totalDataPointsFor30s += dataPointCount;
+        dataPointCount = 0;
+    }, 1000);
+
+    // Log average sample rate every 30 seconds
+    if (sampleRateLogInterval) clearInterval(sampleRateLogInterval);
+    sampleRateLogInterval = setInterval(() => {
+        const avgRate = (totalDataPointsFor30s / 30).toFixed(1);
+        logMessage('logSampleRate30s', { rate: avgRate });
+        totalDataPointsFor30s = 0;
+    }, 30000);
+}
+
+function stopSampleRateTracking() {
+    if (sampleRateInterval) { clearInterval(sampleRateInterval); sampleRateInterval = null; }
+    if (sampleRateLogInterval) { clearInterval(sampleRateLogInterval); sampleRateLogInterval = null; }
+    if (ui.sampleRateSpan) ui.sampleRateSpan.textContent = '';
+    dataPointCount = 0;
+    totalDataPointsFor30s = 0;
+}
+
+async function toggleConnection() {
+    const type = ui.deviceTypeSelect.value;
+
+    if (type === 'serial') {
+        // Toggle only serial connection
+        if (Serial.isSerialConnected()) {
+            await Serial.disconnectSerial();
+            if (!BLE.isBleConnected()) {
+                ui.connectBtn.className = 'btn btn-connect';
+                updateStatusLed('disconnected');
+                stopSampleRateTracking();
+            }
+            updateConnectionUI();
+        } else {
+            updateStatusLed('connecting');
+            try {
+                await Serial.connectSerial(ui.baudRateSelect.value, processDataLine, onDisconnected);
+                ui.connectBtn.textContent = translate('disconnect') || 'Disconnect';
+                ui.connectBtn.className = 'btn btn-disconnect';
+                updateStatusLed('connected');
+                if (!sampleRateInterval) startSampleRateTracking();
+            } catch (e) {
+                if (!BLE.isBleConnected()) updateStatusLed('disconnected');
+            }
+        }
+    } else {
+        // Toggle only BLE connection
+        if (BLE.isBleConnected()) {
+            await BLE.disconnectBLE();
+            if (!Serial.isSerialConnected()) {
+                ui.connectBtn.className = 'btn btn-connect';
+                updateStatusLed('disconnected');
+                stopSampleRateTracking();
+            }
+            updateConnectionUI();
+        } else {
+            updateStatusLed('connecting');
+            try {
+                const bleCustomService = document.getElementById('bleCustomService');
+                const bleCustomRx = document.getElementById('bleCustomRx');
+                const customUUIDs = {};
+                if (bleCustomService && bleCustomService.value.trim()) customUUIDs.service = bleCustomService.value.trim();
+                if (bleCustomRx && bleCustomRx.value.trim()) customUUIDs.rx = bleCustomRx.value.trim();
+                const hasCustom = Object.keys(customUUIDs).length > 0 ? customUUIDs : undefined;
+                await BLE.connectBLE(ui.bleDeviceTypeSelect.value, processDataLine, onDisconnected, hasCustom);
+                ui.connectBtn.textContent = translate('disconnect') || 'Disconnect';
+                ui.connectBtn.className = 'btn btn-disconnect';
+                updateStatusLed('connected');
+                if (!sampleRateInterval) startSampleRateTracking();
+            } catch (e) {
+                if (!Serial.isSerialConnected()) updateStatusLed('disconnected');
+            }
+        }
+    }
+}
+
+function onDisconnected() {
+    // Only fully disconnect UI if no other connection remains
+    if (!Serial.isSerialConnected() && !BLE.isBleConnected()) {
+        if (isLogging) stopLogging();
+        ui.connectBtn.className = 'btn btn-connect';
+        updateStatusLed('disconnected');
+        stopSampleRateTracking();
+    }
+    updateConnectionUI();
+}
+
+// --- Data Processing ---
+function processDataLine(line) {
+    const currentTime = new Date();
+    const highResTime = performance.now();
+    // Locale-aware time for log display
+    const logTime = currentTime.toLocaleTimeString(getLanguage(), { hour12: false }) + '.' + currentTime.getMilliseconds().toString().padStart(3, '0');
+    logDataMessage(`[${logTime}] ${line}`);
+
+    // Fixed format time for CSV (always HH:MM:SS.mmm, no locale text)
+    const hh = String(currentTime.getHours()).padStart(2, '0');
+    const mm = String(currentTime.getMinutes()).padStart(2, '0');
+    const ss = String(currentTime.getSeconds()).padStart(2, '0');
+    const ms = String(currentTime.getMilliseconds()).padStart(3, '0');
+    const timeWithMs = `${hh}:${mm}:${ss}.${ms}`;
+
+    if (!isLogging || isPaused) return;
+
+    let dataPart = line.trim();
+    const upperLine = dataPart.toUpperCase();
+
+    // Get selected delimiter
+    const delimiterRaw = ui.delimiterSelect ? ui.delimiterSelect.value : ',';
+    const delimiter = delimiterRaw === '\\t' ? '\t' : delimiterRaw;
+
+    // Support MCU timestamp prefix: TIMESTAMP,millis,value1,value2,...
+    let mcuTimestamp = null;
+    if (upperLine.startsWith('TIMESTAMP,') || upperLine.startsWith('TIMESTAMP' + delimiter)) {
+        const parts = dataPart.substring(10).split(delimiter);
+        mcuTimestamp = parseFloat(parts[0]);
+        dataPart = parts.slice(1).join(delimiter);
+    } else if (upperLine.startsWith('DATA,') || upperLine.startsWith('DATA' + delimiter)) {
+        dataPart = dataPart.substring(5);
+    }
+
+    try {
+        const values = dataPart.split(delimiter).map(v => parseFloat(v.trim()));
+
+        // Data validation: reject NaN, Infinity, -Infinity
+        if (values.some(v => isNaN(v) || !isFinite(v))) {
+            return logMessage('logDataWarning', { line });
+        }
+
+        // Track sample rate and update LED
+        dataPointCount++;
+        updateStatusLed('receiving');
+
+        // Auto-detect sensor count from first valid data line
+        if (!sensorAutoDetected && values.length > 0) {
+            const currentCount = parseInt(ui.sensorCountInput.value, 10) || 0;
+            if (values.length !== currentCount) {
+                ui.sensorCountInput.value = values.length;
+                updateSensorInputs(true); // Force update even during logging
+                logMessage('logSensorAutoDetected', { count: values.length });
+            }
+            sensorAutoDetected = true;
+        }
+
+        // Warn if value count doesn't match expected sensor count
+        const expectedCount = sensorNames.length;
+        if (values.length !== expectedCount) {
+            logMessage('logSensorCountMismatch', { expected: expectedCount, received: values.length });
+        }
+
+        // Use MCU timestamp if available, otherwise high-res browser time
+        const timeForChart = mcuTimestamp !== null ? { mcuMs: mcuTimestamp } : currentTime;
+        ChartHandler.addDataPoint(values, timeForChart);
+
+        // 게이지 대시보드: 최신 프레임만 넘긴다(그리기는 게이지 쪽 10fps 타이머가 한다)
+        GaugeDash.pushValues(values);
+
+        // 지능형 과학실 ON: 차트에 그려지는 최신 프레임을 저장(1초 타이머가 전송)
+        sonLatestValues = values;
+        sonValuesDirty = true;
+
+        // Check alarms
+        checkAlarms(values, sensorNames);
+
+        // CSV includes both elapsed seconds and absolute time
+        const elapsedSec = mcuTimestamp !== null
+            ? (mcuTimestamp / 1000).toFixed(3)
+            : ((highResTime - perfTimeOrigin) / 1000).toFixed(3);
+        // Fixed date format for CSV: YYYY-MM-DD
+        const csvDate = `${currentTime.getFullYear()}-${String(currentTime.getMonth() + 1).padStart(2, '0')}-${String(currentTime.getDate()).padStart(2, '0')}`;
+        csvData.push([csvDate, timeWithMs, elapsedSec, ...values]);
+
+        // Auto chunk export when CSV data exceeds limit
+        if (csvData.length >= MAX_CSV_ROWS) {
+            csvChunkIndex++;
+            downloadCSV(csvData, sensorNames, csvChunkIndex);
+            logMessage('logCsvChunkSaved', { chunk: csvChunkIndex });
+            csvData = [[translate('csvDate') || 'Date', translate('csvTime') || 'Time', translate('csvElapsed') || 'Elapsed(s)', ...sensorNames]];
+        }
+    } catch (error) {
+        logMessage('logDataError', { line, error: error.message });
+    }
+}
+
+// --- Logging Control ---
+function startLogging() {
+    if (!embedMode && !Serial.isSerialConnected() && !BLE.isBleConnected()) return showToast(translate('alertConnectFirst') || 'Please connect to a device first.', 'warn');
+
+    isLogging = true;
+    isPaused = false;
+
+    csvData = [[translate('csvDate') || 'Date', translate('csvTime') || 'Time', translate('csvElapsed') || 'Elapsed(s)', ...sensorNames]];
+    csvChunkIndex = 0;
+    sensorAutoDetected = false;
+    perfTimeOrigin = performance.now();
+    ChartHandler.resetChart();
+    resetCalculusButtons();
+    GaugeDash.resetGauges();        // 눈금 범위는 세션마다 새로 잡는다
+    GaugeDash.startGaugeTimer();
+
+    if (animationFrameId) cancelAnimationFrame(animationFrameId);
+
+    function animate() {
+        ChartHandler.renderLoop();
+        if (isLogging) animationFrameId = requestAnimationFrame(animate);
+    }
+    animate();
+
+    ui.startBtn.disabled = true;
+    ui.pauseBtn.disabled = false;
+    ui.pauseBtn.textContent = translate('pause') || 'Pause';
+    ui.stopBtn.disabled = false;
+    ui.sensorCountInput.disabled = true;
+    logMessage('logStart');
+
+    // Auto-save session every 5 seconds
+    if (sessionSaveInterval) clearInterval(sessionSaveInterval);
+    sessionSaveInterval = setInterval(() => {
+        if (isLogging && csvData.length > 1) {
+            saveSession({ csvData, sensorNames, startedAt: Date.now() });
+        }
+    }, 5000);
+}
+
+function togglePause() {
+    isPaused = !isPaused;
+    ui.pauseBtn.textContent = isPaused ? (translate('resume') || 'Resume') : (translate('pause') || 'Pause');
+    logMessage(isPaused ? 'logPause' : 'logResume');
+}
+
+function stopLogging() {
+    isLogging = false;
+    if (animationFrameId) cancelAnimationFrame(animationFrameId);
+    animationFrameId = null;
+
+    // Flush all pending buffers before stopping
+    ChartHandler.forceFlushData();
+    flushLogBuffer();
+    // 게이지는 마지막 값을 화면에 남긴 채 타이머만 멈춘다(유휴 시 메인스레드 점유 방지)
+    GaugeDash.stopGaugeTimer();
+
+    ui.startBtn.disabled = false;
+    ui.pauseBtn.disabled = true;
+    ui.pauseBtn.textContent = translate('pause') || 'Pause';
+    ui.stopBtn.disabled = true;
+    ui.sensorCountInput.disabled = false;
+    logMessage('logStop');
+
+    if (sessionSaveInterval) { clearInterval(sessionSaveInterval); sessionSaveInterval = null; }
+    clearSession();
+
+    // 임베드 모드에서는 정지할 때마다 자동 다운로드하지 않음 (BRIXEL_EXPORT 메시지로 명시 내보내기)
+    if (csvData.length > 1 && !embedMode) downloadCSV(csvData, sensorNames);
+}
+
+// --- 브릭셀AI 임베드 브리지 (?embed=1) ---
+// ESP32 데이터 사이언스 랩(scratch3_scidevice)이 window.open 으로 이 페이지를 열고
+// postMessage 로 데이터를 주입한다. 시리얼/BLE 연결 계층을 우회하고 기존 함수를 그대로 재사용.
+function setupEmbedBridge() {
+    if (!embedMode) return;
+
+    // 내부 전송(BrixelAI) 전용 UI: 연결/로깅/센서설정 패널 숨김 — 차트만 표시
+    document.body.classList.add('brixel-embed');
+    const embedStyle = document.createElement('style');
+    embedStyle.textContent = '.brixel-embed .embed-hide{display:none !important;}' +
+        // Plotter popup fills the window and never scrolls — the layout is
+        // viewport-sized (100vh) and the chart canvas resizes to fit.
+        'html.brixel-embed-html,body.brixel-embed{overflow:hidden;height:100vh;}';
+    document.documentElement.classList.add('brixel-embed-html');
+    document.head.appendChild(embedStyle);
+
+    const applyNames = (names) => {
+        if (!Array.isArray(names) || !names.length) return;
+        sensorNames = names.slice();
+        if (ui.sensorCountInput) ui.sensorCountInput.value = sensorNames.length;
+        updateSensorInputs(true);   // sensorNames[i] 보존, 로깅 중에도 강제 갱신
+        updateSonTypeRows();        // 물리량 선택 행을 현재 시리즈에 맞춤
+    };
+
+    window.addEventListener('message', (event) => {
+        const msg = event.data;
+        if (!msg || typeof msg !== 'object') return;
+        switch (msg.type) {
+        case 'BRIXEL_CONFIG':
+            applyNames(msg.sensorNames);
+            break;
+        case 'BRIXEL_START':
+            applyNames(msg.sensorNames);
+            startLogging();
+            break;
+        case 'BRIXEL_DATA':
+            if (typeof msg.line === 'string') processDataLine(msg.line);
+            break;
+        case 'BRIXEL_STOP':
+            stopLogging();
+            break;
+        case 'BRIXEL_CLEAR':
+            ChartHandler.resetChart();
+            GaugeDash.resetGauges();
+            csvData = [[translate('csvDate') || 'Date', translate('csvTime') || 'Time', translate('csvElapsed') || 'Elapsed(s)', ...sensorNames]];
+            break;
+        case 'BRIXEL_EXPORT':
+            if (csvData.length > 1) downloadCSV(csvData, sensorNames);
+            break;
+        default: break;
+        }
+    });
+
+    // 부모(scidevice)에게 준비 완료 알림 → 부모가 CONFIG/START 전송
+    try { if (window.opener) window.opener.postMessage({ type: 'BRIXEL_BOWERBIRD_READY' }, '*'); } catch (e) { /* skip */ }
+}
+
+// --- 지능형 과학실 ON 전송 (현재 차트에 그려지는 값을 재단 플랫폼으로 실시간 업로드) ---
+// 시나리오: ①차트에 데이터 출력 → ②시리즈별 물리량 선택 → ③모둠코드 입력 → ④전송 시작.
+// 그 뒤 1초마다 "현재 플로팅 중인 센서 개수"만큼 최신값이 함께 전송된다(차트는 그대로 표시).
+
+// translate()는 키 미존재 시 키 문자열 자체를 반환 → 한국어 폴백을 보장(현재 ko/en/es만 번역, 나머지는 폴백).
+function sonT(key, fallback) {
+    const v = translate(key);
+    return (v && v !== key) ? v : fallback;
+}
+
+function setupScienceOn() {
+    if (!ui.sonToggleBtn) return;
+    sonUploader.onStatus = (msg, ok) => {
+        if (!ui.sonStatus) return;
+        ui.sonStatus.textContent = msg;
+        ui.sonStatus.style.color = ok ? '#1a7a3a' : '#c0392b';
+    };
+    ui.sonToggleBtn.addEventListener('click', toggleScienceOn);
+    updateSonTypeRows();
+}
+
+// 시리즈별 물리량 선택 행 + 모둠코드 placeholder + 버튼 라벨을 현재 언어로 다시 그림.
+function updateSonTypeRows() {
+    const lang = getLanguage();
+    if (ui.sonModumCode) ui.sonModumCode.placeholder = sonT('sonModumPlaceholder', '모둠코드');
+    if (ui.sonToggleBtn) ui.sonToggleBtn.textContent = sonT(sonActive ? 'sonStopBtn' : 'sonStartBtn', sonActive ? '전송 중지' : '전송 시작');
+    const box = ui.sonTypeRows;
+    if (!box) return;
+    box.innerHTML = '';
+    for (let i = 0; i < sensorNames.length; i++) {
+        if (!sonTypes[i]) sonTypes[i] = 'TEMP';
+        const row = document.createElement('label');
+        row.style.cssText = 'display:flex; align-items:center; gap:4px; font-size:0.72rem; color:#333;';
+        const nm = document.createElement('span');
+        nm.textContent = (sensorNames[i] || `S${i + 1}`) + ':';
+        nm.style.cssText = 'flex:0 0 auto; max-width:45%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;';
+        const sel = document.createElement('select');
+        sel.style.cssText = 'flex:1; min-width:0; font-size:0.72rem; padding:2px; border:1px solid #bcd; border-radius:3px;';
+        SON_TYPES.forEach(t => {
+            const opt = document.createElement('option');
+            opt.value = t.code;
+            opt.textContent = sonTypeLabel(t.code, lang);
+            if (t.code === sonTypes[i]) opt.selected = true;
+            sel.appendChild(opt);
+        });
+        const idx = i;
+        sel.addEventListener('change', (e) => { sonTypes[idx] = e.target.value; });
+        row.appendChild(nm);
+        row.appendChild(sel);
+        box.appendChild(row);
+    }
+    sonTypes.length = sensorNames.length;   // 잉여 항목 잘라냄
+}
+
+async function toggleScienceOn() {
+    if (sonActive) {                 // ── 전송 중지 ──
+        sonActive = false;
+        if (sonSendInterval) { clearInterval(sonSendInterval); sonSendInterval = null; }
+        ui.sonToggleBtn.textContent = sonT('sonStartBtn', '전송 시작');
+        ui.sonToggleBtn.classList.remove('btn-stop'); ui.sonToggleBtn.classList.add('btn-start');
+        await sonUploader.stop();
+        return;
+    }
+    // ── 전송 시작 ──
+    const code = ((ui.sonModumCode && ui.sonModumCode.value) || '').trim();
+    if (!code) {
+        if (ui.sonStatus) { ui.sonStatus.textContent = sonT('sonNeedModum', '모둠코드를 입력하세요.'); ui.sonStatus.style.color = '#c0392b'; }
+        return;
+    }
+    sonUploader.setModumCode(code);
+    ui.sonToggleBtn.disabled = true;
+    const ok = await sonUploader.start();
+    ui.sonToggleBtn.disabled = false;
+    if (!ok) return;                 // 실패 메시지는 onStatus 가 표시
+    sonActive = true;
+    sonValuesDirty = false;
+    ui.sonToggleBtn.textContent = sonT('sonStopBtn', '전송 중지');
+    ui.sonToggleBtn.classList.remove('btn-start'); ui.sonToggleBtn.classList.add('btn-stop');
+    // 플랫폼은 초 단위 최소 간격 → 1초마다 최신 프레임 전송(차트는 30fps 그대로, 새 값 없으면 스킵).
+    sonSendInterval = setInterval(() => {
+        if (!sonActive || !sonLatestValues || !sonValuesDirty) return;
+        sonValuesDirty = false;
+        const series = sonLatestValues.map((v, i) => ({
+            type: sonTypes[i] || 'UVAL',
+            name: sensorNames[i] || `S${i + 1}`,
+            value: v
+        }));
+        sonUploader.sendFrame(series);
+    }, 1000);
+}
+
+// --- CSV Import ---
+function importCSV(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const text = e.target.result;
+        const lines = text.split('\n').filter(l => l.trim());
+        if (lines.length < 2) return logMessage('logImportEmpty');
+
+        // Parse header
+        const header = lines[0].split(',').map(h => h.trim());
+        // Detect sensor columns: skip Date, Time, Elapsed(s) if present
+        let dataStartCol = 0;
+        const importedNames = [];
+        for (let i = 0; i < header.length; i++) {
+            const h = header[i].toLowerCase();
+            if (h === 'date' || h === 'time' || h.startsWith('elapsed')) {
+                dataStartCol = i + 1;
+            } else {
+                importedNames.push(header[i]);
+            }
+        }
+
+        if (importedNames.length === 0) {
+            // No header detected — treat all columns as data
+            dataStartCol = 0;
+            const firstRow = lines[1].split(',');
+            for (let i = 0; i < firstRow.length; i++) {
+                importedNames.push(`Sensor ${i + 1}`);
+            }
+        }
+
+        // Update sensor settings
+        ui.sensorCountInput.value = importedNames.length;
+        sensorNames = importedNames;
+        updateSensorInputs();
+
+        // Reset chart and load data
+        ChartHandler.resetChart();
+        resetCalculusButtons();
+
+        let pointCount = 0;
+        for (let row = 1; row < lines.length; row++) {
+            const cols = lines[row].split(',').map(c => c.trim());
+            const values = cols.slice(dataStartCol).map(v => parseFloat(v));
+            if (values.some(v => isNaN(v) || !isFinite(v))) continue;
+
+            // Use row index as elapsed time if no elapsed column
+            const elapsed = dataStartCol >= 3 ? parseFloat(cols[2]) : (row - 1) * 0.1;
+            const fakeTime = new Date(Date.now() + elapsed * 1000);
+            ChartHandler.addDataPoint(values, fakeTime);
+            pointCount++;
+        }
+
+        ChartHandler.forceFlushData();
+        logMessage('logImportSuccess', { count: pointCount, sensors: importedNames.length });
+    };
+    reader.readAsText(file);
+}
+
+// --- Sensor Settings ---
+function updateSensorInputs(forceUpdate = false) {
+    // Prevent manual sensor count changes during logging (but allow auto-detect)
+    if (isLogging && !forceUpdate) {
+        showToast(translate('alertCannotChangeSensorCount') || 'Cannot change sensor count during logging.', 'warn');
+        ui.sensorCountInput.value = sensorNames.length;
+        return;
+    }
+
+    const count = parseInt(ui.sensorCountInput.value, 10) || 0;
+    ui.sensorInputsContainer.innerHTML = '';
+
+    const newSensorNames = [];
+    const sensorLabel = translate('sensorDefaultName') || 'Sensor';
+    const alarmMinLabel = translate('alarmMin') || 'Min';
+    const alarmMaxLabel = translate('alarmMax') || 'Max';
+
+    // Alarm inputs container
+    const alarmInputsContainer = document.getElementById('alarmInputs');
+    if (alarmInputsContainer) alarmInputsContainer.innerHTML = '';
+
+    for (let i = 0; i < count; i++) {
+        const defaultName = sensorNames[i] || `${sensorLabel} ${i + 1}`;
+        newSensorNames.push(defaultName);
+
+        const inputGroup = document.createElement('div');
+        inputGroup.className = 'sensor-input-group';
+        inputGroup.innerHTML = `<label>${sensorLabel} ${i + 1}:</label><input type="text" value="${defaultName}">`;
+
+        inputGroup.querySelector('input').addEventListener('input', (e) => {
+            sensorNames[i] = e.target.value.trim() || `${sensorLabel} ${i + 1}`;
+            ChartHandler.updateChartDatasets(sensorNames);
+            GaugeDash.buildGauges(sensorNames);   // 게이지 이름표도 같이 바꾼다(개수가 같으면 이름만 교체)
+        });
+        ui.sensorInputsContainer.appendChild(inputGroup);
+
+        // Create alarm min/max inputs
+        if (alarmInputsContainer) {
+            const alarmGroup = document.createElement('div');
+            alarmGroup.className = 'sensor-input-group';
+            alarmGroup.style.display = 'flex';
+            alarmGroup.style.gap = '4px';
+            alarmGroup.style.alignItems = 'center';
+            alarmGroup.style.marginBottom = '4px';
+            alarmGroup.innerHTML = `
+                <label style="min-width: 60px; font-size: 0.8rem;">${sensorLabel} ${i + 1}:</label>
+                <input type="number" placeholder="${alarmMinLabel}" style="width: 60px; font-size: 0.8rem;" data-alarm-min="${i}">
+                <input type="number" placeholder="${alarmMaxLabel}" style="width: 60px; font-size: 0.8rem;" data-alarm-max="${i}">
+            `;
+
+            const minInput = alarmGroup.querySelector(`[data-alarm-min="${i}"]`);
+            const maxInput = alarmGroup.querySelector(`[data-alarm-max="${i}"]`);
+
+            const updateAlarm = () => {
+                setAlarm(i, minInput.value, maxInput.value);
+            };
+            minInput.addEventListener('change', updateAlarm);
+            maxInput.addEventListener('change', updateAlarm);
+
+            alarmInputsContainer.appendChild(alarmGroup);
+        }
+    }
+    sensorNames = newSensorNames;
+    ChartHandler.updateChartDatasets(sensorNames);
+    GaugeDash.buildGauges(sensorNames);   // 게이지도 시리즈 수·이름에 맞춰 재구성
+}
