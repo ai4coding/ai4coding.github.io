@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brixel AI — Google Gemini Extension Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Noto+Sans:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0B0D1A;
+    --card: #141829;
+    --card-border: #1E2340;
+    --accent-blue: #4285F4;
+    --accent-green: #34A853;
+    --accent-yellow: #FBBC05;
+    --accent-red: #EA4335;
+    --accent-purple: #A374DB;
+    --text: #E8EAF0;
+    --text-dim: #8B90A5;
+    --text-bright: #FFFFFF;
+    --gemini-gradient: linear-gradient(135deg, #EA4335 0%, #FBBC05 25%, #34A853 50%, #4285F4 75%, #A374DB 100%);
+    --glow: 0 0 40px rgba(66,133,244,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans KR', 'Noto Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* ── Starfield Background ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 30% 60%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 50% 10%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 70% 40%, rgba(255,255,255,0.25) 0%, transparent 100%),
+      radial-gradient(1px 1px at 90% 80%, rgba(255,255,255,0.35) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 15% 85%, rgba(255,255,255,0.45) 0%, transparent 100%),
+      radial-gradient(1px 1px at 60% 75%, rgba(255,255,255,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 85% 15%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 40% 45%, rgba(255,255,255,0.15) 0%, transparent 100%),
+      radial-gradient(2px 2px at 25% 35%, rgba(66,133,244,0.4) 0%, transparent 100%),
+      radial-gradient(2px 2px at 75% 65%, rgba(234,67,53,0.3) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* ── Hero Section ── */
+  .hero {
+    text-align: center;
+    padding: 60px 0 50px;
+  }
+
+  .hero-logo {
+    width: 80px; height: 80px;
+    margin: 0 auto 24px;
+    background: var(--gemini-gradient);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath d='M20 0 C22 14 26 18 40 20 C26 22 22 26 20 40 C18 26 14 22 0 20 C14 18 18 14 20 0Z'/%3E%3C/svg%3E") center/contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath d='M20 0 C22 14 26 18 40 20 C26 22 22 26 20 40 C18 26 14 22 0 20 C14 18 18 14 20 0Z'/%3E%3C/svg%3E") center/contain no-repeat;
+    filter: drop-shadow(0 0 30px rgba(66,133,244,0.5));
+  }
+
+  .hero h1 {
+    font-size: 2.2rem;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+    background: var(--gemini-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero .subtitle {
+    font-size: 1rem;
+    color: var(--text-dim);
+    font-weight: 300;
+  }
+
+  .hero .subtitle em {
+    font-style: normal;
+    color: var(--accent-blue);
+  }
+
+  /* ── Language Toggle ── */
+  .lang-toggle {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin: 30px 0 10px;
+  }
+
+  .lang-btn {
+    padding: 6px 18px;
+    border-radius: 20px;
+    border: 1px solid var(--card-border);
+    background: var(--card);
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+
+  .lang-btn.active {
+    background: var(--accent-blue);
+    color: white;
+    border-color: var(--accent-blue);
+  }
+
+  /* ── Sections ── */
+  .section {
+    margin-top: 48px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .section-num {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .section-header h2 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text-bright);
+  }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 16px;
+    box-shadow: var(--glow);
+    transition: border-color 0.3s;
+  }
+
+  .card:hover {
+    border-color: rgba(66,133,244,0.3);
+  }
+
+  .card h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--text-bright);
+  }
+
+  .card p, .card li {
+    font-size: 0.92rem;
+    color: var(--text);
+    line-height: 1.75;
+  }
+
+  .card ul, .card ol {
+    padding-left: 20px;
+    margin-top: 8px;
+  }
+
+  .card li { margin-bottom: 6px; }
+
+  .card li::marker { color: var(--accent-blue); }
+
+  /* ── Step Cards ── */
+  .step {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 20px 24px;
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    margin-bottom: 12px;
+  }
+
+  .step-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+  }
+
+  .step-content h4 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-bright);
+    margin-bottom: 4px;
+  }
+
+  .step-content p {
+    font-size: 0.88rem;
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  /* ── Rate Limit Table ── */
+  .rate-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 16px;
+    font-size: 0.88rem;
+  }
+
+  .rate-table th {
+    background: rgba(66,133,244,0.12);
+    color: var(--accent-blue);
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 1px solid var(--card-border);
+  }
+
+  .rate-table td {
+    padding: 10px 16px;
+    border-bottom: 1px solid rgba(30,35,64,0.6);
+    color: var(--text);
+  }
+
+  .rate-table tr:last-child td { border-bottom: none; }
+
+  .rate-table .recommend {
+    color: var(--accent-green);
+    font-weight: 600;
+  }
+
+  /* ── Warning / Info Boxes ── */
+  .alert {
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin: 16px 0;
+    font-size: 0.9rem;
+    line-height: 1.7;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .alert-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 2px; }
+
+  .alert-danger {
+    background: rgba(234,67,53,0.08);
+    border: 1px solid rgba(234,67,53,0.2);
+  }
+
+  .alert-warning {
+    background: rgba(251,188,5,0.08);
+    border: 1px solid rgba(251,188,5,0.2);
+  }
+
+  .alert-info {
+    background: rgba(66,133,244,0.08);
+    border: 1px solid rgba(66,133,244,0.2);
+  }
+
+  .alert-safe {
+    background: rgba(52,168,83,0.08);
+    border: 1px solid rgba(52,168,83,0.2);
+  }
+
+  .alert strong { color: var(--text-bright); }
+
+  /* ── Code ── */
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    background: rgba(66,133,244,0.1);
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 0.85em;
+    color: var(--accent-blue);
+  }
+
+  /* ── Block Mock ── */
+  .block-mock {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    margin: 3px 2px;
+    color: white;
+    white-space: nowrap;
+  }
+
+  .block-cmd { background: #4285F4; }
+  .block-reporter { background: #3367D6; border-radius: 20px; }
+  .block-bool { background: #2A56C6; clip-path: polygon(12px 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 12px 100%, 0 50%); padding: 6px 20px; }
+
+  /* ── Block List ── */
+  .block-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 16px 0;
+  }
+
+  /* ── Footer ── */
+  .footer {
+    text-align: center;
+    margin-top: 60px;
+    padding-top: 30px;
+    border-top: 1px solid var(--card-border);
+    color: var(--text-dim);
+    font-size: 0.8rem;
+  }
+
+  /* ── Checklist ── */
+  .checklist { list-style: none; padding: 0; }
+  .checklist li {
+    padding: 8px 0 8px 28px;
+    position: relative;
+    font-size: 0.9rem;
+  }
+  .checklist li::before {
+    content: '☐';
+    position: absolute;
+    left: 0;
+    color: var(--accent-blue);
+    font-size: 1.1rem;
+  }
+
+  /* ── Badge ── */
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    vertical-align: middle;
+  }
+  .badge-free { background: rgba(52,168,83,0.15); color: var(--accent-green); }
+  .badge-caution { background: rgba(251,188,5,0.15); color: var(--accent-yellow); }
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    .container { padding: 20px 16px 60px; }
+    .hero h1 { font-size: 1.6rem; }
+    .card { padding: 20px; }
+    .step { flex-direction: column; gap: 10px; }
+    .rate-table { font-size: 0.8rem; }
+    .rate-table th, .rate-table td { padding: 8px 10px; }
+  }
+
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Language Toggle -->
+  <div class="lang-toggle">
+    <button class="lang-btn active" onclick="switchLang('ko')">한국어</button>
+    <button class="lang-btn" onclick="switchLang('en')">English</button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- KOREAN VERSION -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div id="lang-ko">
+
+    <div class="hero">
+      <div class="hero-logo"></div>
+      <h1>Google Gemini AI 확장블록</h1>
+      <p class="subtitle">Brixel AI &amp; AI*Robot Scratch · <em>사용 안내 및 주의사항</em></p>
+    </div>
+
+    <!-- ── 개요 ── -->
+    <div class="alert alert-info">
+      <span class="alert-icon">💡</span>
+      <div>
+        이 확장블록은 <strong>Google Gemini API</strong> 또는 <strong>Groq API</strong> 무료 할당량을 사용합니다. 학생 각자의 계정으로 API 키를 발급받아 사용하며, 별도의 요금이 청구되지 않습니다. API 키는 <strong>서버에 저장되지 않으며</strong>, 여러분의 브라우저 안에서만 관리됩니다. 새로고침해도 키가 유지되며, 탭을 닫으면 자동 삭제됩니다.
+      </div>
+    </div>
+
+    <!-- ── SECTION 1: 시작하기 ── -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num" style="background:var(--accent-blue);">1</div>
+        <h2>시작하기 — API 키 발급 및 등록</h2>
+      </div>
+
+      <div class="step">
+        <div class="step-icon" style="background:rgba(66,133,244,0.12);">🔗</div>
+        <div class="step-content">
+          <h4>1단계: Google AI Studio 접속</h4>
+          <p><span class="block-mock block-cmd">Google Gemini API 키 발급받으러 가기</span> 블록을 클릭하면 Google AI Studio가 열립니다.<br>
+          또는 직접 접속: <code>aistudio.google.com/apikey</code></p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-icon" style="background:rgba(52,168,83,0.12);">🔑</div>
+        <div class="step-content">
+          <h4>2단계: API 키 만들기</h4>
+          <p>Google 계정으로 로그인 → <strong>"API 키 만들기(Create API Key)"</strong> 클릭 → 생성된 키(<code>AIza...</code>로 시작)를 복사합니다. <span class="badge badge-free">무료</span> 신용카드 등록이 필요 없습니다.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-icon" style="background:rgba(163,116,219,0.12);">📋</div>
+        <div class="step-content">
+          <h4>3단계: 블록에 키 입력</h4>
+          <p><span class="block-mock block-cmd">API 키 설정 [KEY]</span> 블록에 복사한 키를 붙여넣기 합니다.<br>
+          <span class="block-mock block-bool">Gemini AI 연결 확인됨?</span> 블록이 <strong>true</strong>이면 성공!</p>
+        </div>
+      </div>
+
+      <div class="alert alert-safe" style="margin-top:20px;">
+        <span class="alert-icon">🔄</span>
+        <div>
+          <strong>Groq도 같은 방식입니다:</strong> <span class="block-mock block-cmd">Groq API 키 발급받으러 가기</span> → <a href="https://console.groq.com/keys" target="_blank" style="color:var(--accent-blue);">console.groq.com</a>에서 키 발급 → <span class="block-mock block-cmd">Groq API 키 설정 [KEY]</span>에 붙여넣기. Gemini 한도가 소진되었을 때 Groq로 전환하면 계속 사용할 수 있습니다.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SECTION 2: 무료 사용량 ── -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num" style="background:var(--accent-green);">2</div>
+        <h2>무료 사용량 안내</h2>
+      </div>
+
+      <div class="card">
+        <h3>📊 모델별 무료 할당량 (2026년 3월 기준)</h3>
+        <table class="rate-table">
+          <thead>
+            <tr>
+              <th>모델</th>
+              <th>분당 요청</th>
+              <th>일일 요청</th>
+              <th>특징</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="recommend">Gemini 2.5 Flash ⭐</td>
+              <td class="recommend">10회</td>
+              <td class="recommend">250회</td>
+              <td>속도↑ 품질↑ <strong>추천</strong></td>
+            </tr>
+            <tr>
+              <td>Gemini 2.5 Flash-Lite</td>
+              <td>15회</td>
+              <td>1,000회</td>
+              <td>가장 빠름, 대량 사용</td>
+            </tr>
+            <tr>
+              <td>Gemini 2.5 Pro</td>
+              <td>5회</td>
+              <td>100회</td>
+              <td>최고 품질, 복잡한 작업</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3 style="margin-top:24px;">🟢 Groq 모델 (대체제)</h3>
+        <table class="rate-table">
+          <thead>
+            <tr>
+              <th>모델</th>
+              <th>분당 요청</th>
+              <th>일일 요청</th>
+              <th>특징</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="recommend">Llama 3.3 70B ⭐</td>
+              <td class="recommend">30회</td>
+              <td class="recommend">14,400회</td>
+              <td>고품질, Gemini 대체 <strong>추천</strong></td>
+            </tr>
+            <tr>
+              <td>Llama 3.1 8B</td>
+              <td>30회</td>
+              <td>14,400회</td>
+              <td>초고속, 간단한 질문</td>
+            </tr>
+            <tr>
+              <td>Gemma 2 9B</td>
+              <td>30회</td>
+              <td>14,400회</td>
+              <td>균형 잡힌 성능</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="alert alert-warning" style="margin-top:20px;">
+          <span class="alert-icon">⚠️</span>
+          <div>
+            <strong>일일 한도 초과 시:</strong> 429 오류가 발생합니다. Gemini 한도 소진 시 Groq로 전환하면 계속 사용할 수 있습니다. Groq는 일일 14,400회로 매우 넉넉합니다.
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>🧮 교실 사용 시나리오 (학생 1인 기준)</h3>
+        <p>학생 각자 자기 Google 계정으로 API 키를 발급받으므로, <strong>1인당 할당량을 전부 사용</strong>할 수 있습니다.</p>
+        <ul>
+          <li><strong>Gemini Flash-Lite:</strong> 1인당 <strong>일일 1,000회</strong> · 50분 수업 중 분당 15회까지 가능</li>
+          <li><strong>Gemini Flash:</strong> 1인당 <strong>일일 250회</strong> · 50분 수업이면 분당 5회 페이스로 충분</li>
+          <li><strong>Groq Llama 3.3 70B:</strong> 1인당 <strong>일일 14,400회</strong> · 사실상 무제한 사용</li>
+        </ul>
+        <p style="margin-top:12px; color:var(--text-dim);">※ 할당량은 학생 개인 계정 단위이므로 다른 학생과 공유되지 않습니다. 반드시 학생 각자의 계정으로 키를 발급받으세요.</p>
+      </div>
+    </div>
+
+    <!-- ── SECTION 3: API 키 보안 ── -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num" style="background:var(--accent-red);">3</div>
+        <h2>🔐 API 키 보안 — 꼭 읽어주세요!</h2>
+      </div>
+
+      <div class="alert alert-danger">
+        <span class="alert-icon">🚨</span>
+        <div>
+          <strong>API 키는 비밀번호와 같습니다!</strong><br>
+          다른 사람이 내 키를 사용하면 <strong>내 할당량이 소진</strong>되고, 유료 전환 시 <strong>내 계정에 요금</strong>이 청구될 수 있습니다. 절대 다른 사람에게 공유하지 마세요.
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>이 확장블록의 보안 설계</h3>
+        <ul>
+          <li><strong>sessionStorage 저장:</strong> 탭을 닫으면 자동 삭제, 새로고침 시 유지됩니다</li>
+          <li><strong>헤더 전송:</strong> API 키가 URL에 노출되지 않도록 HTTP 헤더로만 전송합니다</li>
+          <li><strong>프로젝트 저장/공유 시 키 제외:</strong> .sb3 파일에 API 키가 절대 포함되지 않습니다</li>
+          <li><strong>서버 미저장:</strong> 키는 여러분의 브라우저 안에서만 존재합니다. Brixel AI 서버로 전송되지 않습니다</li>
+          <li><strong>5초 쿨다운:</strong> 무료 쿼터 보호를 위해 요청 간 5초 간격이 자동 적용됩니다</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>🖥️ 공용 컴퓨터(학교/도서관/PC방) 사용 시</h3>
+        <ol>
+          <li>사용 시작 전 <span class="block-mock block-cmd">공용 컴퓨터 모드 [켜기]</span> 블록을 먼저 실행하세요<br>→ API 키가 어디에도 저장되지 않습니다 (메모리에만 유지)</li>
+          <li>사용이 끝나면 반드시 <span class="block-mock block-cmd">API 키 삭제하기</span> 블록을 실행하세요</li>
+          <li>가능하면 브라우저 시크릿/비공개 모드에서 사용하세요</li>
+        </ol>
+      </div>
+
+      <div class="card">
+        <h3>🛡️ API 키가 노출되었다면?</h3>
+        <ol>
+          <li>즉시 <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--accent-blue);">Google AI Studio</a>에 접속합니다</li>
+          <li>노출된 API 키를 <strong>삭제(Delete)</strong>합니다</li>
+          <li><strong>"API 키 만들기"</strong>로 새 키를 발급받습니다</li>
+          <li>새 키를 블록에 다시 등록합니다</li>
+        </ol>
+        <p style="margin-top:10px; color:var(--text-dim);">※ 키 재발급은 무료이며 즉시 가능합니다. 노출이 의심되면 바로 교체하세요.</p>
+      </div>
+    </div>
+
+    <!-- ── SECTION 4: 블록 목록 ── -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num" style="background:var(--accent-purple);">4</div>
+        <h2>전체 블록 목록</h2>
+      </div>
+
+      <div class="card">
+        <h3>🔧 설정 블록</h3>
+        <div class="block-list">
+          <span class="block-mock block-cmd">📖 사용법 및 주의사항 안내 보기</span>
+          <span class="block-mock block-cmd">Google Gemini API 키 발급받으러 가기</span>
+          <span class="block-mock block-cmd">API 키 설정 [KEY]</span>
+          <span class="block-mock block-cmd">Groq API 키 발급받으러 가기</span>
+          <span class="block-mock block-cmd">Groq API 키 설정 [KEY]</span>
+          <span class="block-mock block-cmd">AI 모델 선택 [MODEL]</span>
+          <span class="block-mock block-cmd">공용 컴퓨터 모드 [켜기/끄기]</span>
+          <span class="block-mock block-cmd">AI 역할 설정 [ROLE]</span>
+        </div>
+
+        <h3 style="margin-top:20px;">💬 대화 블록</h3>
+        <div class="block-list">
+          <span class="block-mock block-cmd">AI에게 질문하기 [PROMPT]</span>
+          <span class="block-mock block-reporter">AI에게 질문하고 답 받기 [PROMPT]</span>
+          <span class="block-mock block-reporter">AI 응답</span>
+          <span class="block-mock block-cmd">AI 응답 복사하기</span>
+          <span class="block-mock block-cmd">AI 응답을 변수 [VAR] 에 저장</span>
+          <span class="block-mock block-cmd">대화 기록 초기화</span>
+        </div>
+
+        <h3 style="margin-top:20px;">🔍 상태 확인 블록</h3>
+        <div class="block-list">
+          <span class="block-mock block-bool">Gemini AI 연결 확인됨?</span>
+          <span class="block-mock block-reporter">연결 상태</span>
+          <span class="block-mock block-bool">AI가 응답 중인가?</span>
+        </div>
+
+        <h3 style="margin-top:20px;">🗑️ 관리 블록</h3>
+        <div class="block-list">
+          <span class="block-mock block-cmd">API 키 삭제하기</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SECTION 5: 주의사항 ── -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num" style="background:var(--accent-yellow);">5</div>
+        <h2>주의사항 체크리스트</h2>
+      </div>
+
+      <div class="card">
+        <ul class="checklist">
+          <li>API 키를 친구나 다른 사람에게 알려주지 않기</li>
+          <li>API 키를 채팅, SNS, 이메일로 보내지 않기</li>
+          <li>API 키를 코드 블록의 "말하기" 블록 등에 넣지 않기</li>
+          <li>공용 컴퓨터에서는 반드시 "공용 컴퓨터 모드" 켜기</li>
+          <li>사용 후 공용 컴퓨터에서는 "API 키 삭제하기" 실행</li>
+          <li>과도한 반복 질문(무한루프 안에서 AI 질문)은 할당량을 빠르게 소진</li>
+          <li>AI의 답변은 항상 정확하지 않을 수 있음 — 중요한 정보는 확인 필요</li>
+          <li>안전 필터가 부적절한 질문을 차단할 수 있음 — 이는 정상 동작</li>
+        </ul>
+      </div>
+
+      <div class="alert alert-safe">
+        <span class="alert-icon">✅</span>
+        <div>
+          <strong>안심하세요:</strong> 프로젝트를 저장하거나 공유해도 API 키는 절대 포함되지 않습니다. 프로젝트를 공유받은 사람은 자신의 API 키를 새로 입력해야 합니다.
+        </div>
+      </div>
+      <div class="alert alert-safe">
+        <span class="alert-icon">🔒</span>
+        <div>
+          <strong>탭을 닫으면 키가 자동 삭제됩니다.</strong> API 키는 브라우저 탭의 sessionStorage에만 저장되므로, 탭이나 브라우저를 닫으면 완전히 사라집니다. 다음에 다시 사용하려면 API 키를 새로 입력하면 됩니다. 새로고침(F5)만 하면 키가 유지되므로 수업 중에는 편하게 사용할 수 있습니다.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SECTION 6: FAQ ── -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num" style="background:var(--accent-blue);">?</div>
+        <h2>자주 묻는 질문</h2>
+      </div>
+
+      <div class="card">
+        <h3>Q. 돈이 들지 않나요?</h3>
+        <p>무료 할당량 안에서 사용하면 비용이 발생하지 않습니다. Google은 무료 사용자에게 신용카드를 요구하지 않습니다. 유료 전환은 사용자가 직접 결제 수단을 등록해야만 가능하므로, 자동으로 과금되지 않습니다.</p>
+      </div>
+
+      <div class="card">
+        <h3>Q. 탭을 닫으면 키가 사라지나요?</h3>
+        <p><strong>네, 탭을 닫으면 API 키가 완전히 삭제됩니다.</strong> 새로고침(F5)만 하면 키가 유지되므로 수업 중에는 편하게 사용할 수 있습니다. 탭이나 브라우저를 닫으면 다음에 다시 입력해야 합니다. 공용PC 모드에서는 어디에도 저장되지 않습니다.</p>
+      </div>
+
+      <div class="card">
+        <h3>Q. Groq는 뭔가요?</h3>
+        <p>Groq는 Gemini의 대체 AI 서비스입니다. 무료 할당량이 <strong>일일 14,400회</strong>로 매우 넉넉합니다. Gemini 한도가 소진되었을 때 Groq 모델로 전환하면 계속 사용할 수 있습니다. <a href="https://console.groq.com/keys" target="_blank" style="color:var(--accent-blue);">console.groq.com</a>에서 무료 키를 발급받으세요.</p>
+      </div>
+
+      <div class="card">
+        <h3>Q. 여러 학생이 같은 키를 쓸 수 있나요?</h3>
+        <p>가능하지만 <strong>권장하지 않습니다.</strong> 할당량이 공유되어 금방 소진되고, 키가 여러 기기에 노출되면 보안 위험이 커집니다. 학생마다 자기 Google 계정으로 키를 발급받는 것이 가장 안전합니다.</p>
+      </div>
+
+      <div class="card">
+        <h3>Q. 어떤 모델을 선택해야 하나요?</h3>
+        <p>Gemini <strong>Flash-Lite</strong>가 가장 넉넉합니다 (1,000회/일). 더 똑똑한 답변이 필요하면 <strong>Flash</strong>나 <strong>Pro</strong>를 선택하세요. Gemini 한도가 부족하면 <strong>Groq Llama 3.3 70B</strong>(14,400회/일)로 전환하면 됩니다.</p>
+      </div>
+
+      <div class="card">
+        <h3>Q. "안전 필터에 의해 차단되었습니다" 메시지가 뜹니다</h3>
+        <p>Google의 안전 필터가 부적절하다고 판단한 질문을 차단한 것입니다. 이 확장블록은 K-12 학생 보호를 위해 가장 엄격한 안전 설정을 적용하고 있습니다. 질문 내용을 바꿔서 다시 시도해보세요.</p>
+      </div>
+    </div>
+
+    <div class="footer">
+      Brixel AI · Google Gemini Extension Guide<br>
+      © 2026 Brixel AI. Google Gemini는 Google LLC의 상표입니다.
+    </div>
+
+  </div><!-- /lang-ko -->
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- ENGLISH VERSION -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div id="lang-en" class="hidden">
+
+    <div class="hero">
+      <div class="hero-logo"></div>
+      <h1>Google Gemini AI Extension</h1>
+      <p class="subtitle">Brixel AI &amp; AI*Robot Scratch · <em>Usage Guide &amp; Safety Information</em></p>
+    </div>
+
+    <!-- ── Overview ── -->
+    <div class="alert alert-info">
+      <span class="alert-icon">💡</span>
+      <div>
+        This extension uses the <strong>Google Gemini API</strong> or <strong>Groq API</strong> free tier. Each student gets their own API key — no charges apply within the free quota. Your API key is <strong>never sent to our servers</strong>; it stays in your browser only. Keys persist through page refresh but are deleted when you close the tab.
+      </div>
+    </div>
+
+    <!-- ── SECTION 1: Getting Started ── -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num" style="background:var(--accent-blue);">1</div>
+        <h2>Getting Started — API Key Setup</h2>
+      </div>
+
+      <div class="step">
+        <div class="step-icon" style="background:rgba(66,133,244,0.12);">🔗</div>
+        <div class="step-content">
+          <h4>Step 1: Open Google AI Studio</h4>
+          <p>Click the <span class="block-mock block-cmd">Go to Google Gemini API Key page</span> block to open Google AI Studio.<br>
+          Or visit directly: <code>aistudio.google.com/apikey</code></p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-icon" style="background:rgba(52,168,83,0.12);">🔑</div>
+        <div class="step-content">
+          <h4>Step 2: Create an API Key</h4>
+          <p>Sign in with your Google account → Click <strong>"Create API Key"</strong> → Copy the generated key (starts with <code>AIza...</code>). <span class="badge badge-free">FREE</span> No credit card required.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-icon" style="background:rgba(163,116,219,0.12);">📋</div>
+        <div class="step-content">
+          <h4>Step 3: Enter Key in the Block</h4>
+          <p>Paste your key into the <span class="block-mock block-cmd">Set API Key [KEY]</span> block.<br>
+          If <span class="block-mock block-bool">Gemini AI Connected?</span> returns <strong>true</strong>, you're all set!</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SECTION 2: Free Tier Limits ── -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num" style="background:var(--accent-green);">2</div>
+        <h2>Free Tier Usage Limits</h2>
+      </div>
+
+      <div class="card">
+        <h3>📊 Free Quota by Model (as of March 2026)</h3>
+        <table class="rate-table">
+          <thead>
+            <tr>
+              <th>Model</th>
+              <th>Per Minute</th>
+              <th>Per Day</th>
+              <th>Best For</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="recommend">Gemini 2.5 Flash ⭐</td>
+              <td class="recommend">10 req</td>
+              <td class="recommend">250 req</td>
+              <td>Fast + Smart <strong>Recommended</strong></td>
+            </tr>
+            <tr>
+              <td>Gemini 2.5 Flash-Lite</td>
+              <td>15 req</td>
+              <td>1,000 req</td>
+              <td>Fastest, high volume</td>
+            </tr>
+            <tr>
+              <td>Gemini 2.5 Pro</td>
+              <td>5 req</td>
+              <td>100 req</td>
+              <td>Best quality, complex tasks</td>
+            </tr>
+          </tbody>
+        </table>
+        <h3 style="margin-top:24px;">🟢 Groq Models (Alternative)</h3>
+        <table class="rate-table">
+          <thead><tr><th>Model</th><th>Per Minute</th><th>Per Day</th><th>Best For</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="recommend">Llama 3.3 70B ⭐</td>
+              <td class="recommend">30 req</td>
+              <td class="recommend">14,400 req</td>
+              <td>High quality <strong>Recommended</strong></td>
+            </tr>
+            <tr>
+              <td>Llama 3.1 8B</td><td>30 req</td><td>14,400 req</td><td>Ultra fast</td>
+            </tr>
+            <tr>
+              <td>Gemma 2 9B</td><td>30 req</td><td>14,400 req</td><td>Balanced</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="alert alert-warning" style="margin-top:20px;">
+          <span class="alert-icon">⚠️</span>
+          <div>
+            <strong>When daily limit is reached:</strong> You'll get a 429 error. Daily quotas reset at midnight Pacific Time. For classroom use, <strong>Flash-Lite</strong> (1,000/day) gives the most room.
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>🧮 Classroom Scenario</h3>
+        <p>A class of 30 students during a 50-minute lesson:</p>
+        <ul>
+          <li><strong>Flash-Lite:</strong> ~33 questions per student (1,000 ÷ 30)</li>
+          <li><strong>Flash:</strong> ~8 questions per student (250 ÷ 30)</li>
+        </ul>
+        <p style="margin-top:12px; color:var(--text-dim);">※ Quotas are per Google account (project). When each student uses their own API key, limits are NOT shared.</p>
+      </div>
+    </div>
+
+    <!-- ── SECTION 3: API Key Security ── -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num" style="background:var(--accent-red);">3</div>
+        <h2>🔐 API Key Security — Must Read!</h2>
+      </div>
+
+      <div class="alert alert-danger">
+        <span class="alert-icon">🚨</span>
+        <div>
+          <strong>Your API key is like a password!</strong><br>
+          If someone else uses your key, <strong>your quota gets consumed</strong>, and if you ever switch to paid, <strong>charges go to your account</strong>. Never share your key with anyone.
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>How This Extension Protects Your Key</h3>
+        <ul>
+          <li><strong>Encryption:</strong> Your key is encrypted with AES-GCM 256-bit before storage</li>
+          <li><strong>Session-only storage:</strong> Stored in sessionStorage only — automatically deleted when you close the tab or browser</li>
+          <li><strong>Header transmission:</strong> Key is sent via HTTP header (not exposed in URL)</li>
+          <li><strong>Not saved in projects:</strong> Your key is NEVER included when saving or sharing .sb3 files</li>
+          <li><strong>No server storage:</strong> Your key exists only in your browser. It is never sent to Brixel AI servers</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>🖥️ Using a Shared/Public Computer (School, Library)?</h3>
+        <ol>
+          <li>Before starting, run <span class="block-mock block-cmd">Shared Computer Mode [ON]</span><br>→ Your key will NOT be stored anywhere (memory only)</li>
+          <li>When finished, always run <span class="block-mock block-cmd">Delete API Key</span></li>
+          <li>If possible, use the browser's Incognito/Private mode</li>
+        </ol>
+      </div>
+
+      <div class="card">
+        <h3>🛡️ If Your Key Gets Exposed</h3>
+        <ol>
+          <li>Go to <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--accent-blue);">Google AI Studio</a> immediately</li>
+          <li><strong>Delete</strong> the exposed API key</li>
+          <li>Click <strong>"Create API Key"</strong> to get a new one</li>
+          <li>Enter the new key in the block</li>
+        </ol>
+        <p style="margin-top:10px; color:var(--text-dim);">※ Re-issuing a key is free and instant. Replace immediately if you suspect exposure.</p>
+      </div>
+    </div>
+
+    <!-- ── SECTION 4: All Blocks ── -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num" style="background:var(--accent-purple);">4</div>
+        <h2>Complete Block Reference</h2>
+      </div>
+
+      <div class="card">
+        <h3>🔧 Setup Blocks</h3>
+        <div class="block-list">
+          <span class="block-mock block-cmd">📖 Show Usage Guide</span>
+          <span class="block-mock block-cmd">Go to Google Gemini API Key page</span>
+          <span class="block-mock block-cmd">Set API Key [KEY]</span>
+          <span class="block-mock block-cmd">Shared Computer Mode [ON/OFF]</span>
+          <span class="block-mock block-cmd">Set AI Role [ROLE]</span>
+          <span class="block-mock block-cmd">Select AI Model [MODEL]</span>
+        </div>
+
+        <h3 style="margin-top:20px;">💬 Conversation Blocks</h3>
+        <div class="block-list">
+          <span class="block-mock block-cmd">Ask AI [PROMPT]</span>
+          <span class="block-mock block-reporter">Ask AI and get answer [PROMPT]</span>
+          <span class="block-mock block-reporter">AI Response</span>
+          <span class="block-mock block-cmd">Save AI Response to variable [VAR]</span>
+          <span class="block-mock block-cmd">Clear Conversation History</span>
+        </div>
+
+        <h3 style="margin-top:20px;">🔍 Status Blocks</h3>
+        <div class="block-list">
+          <span class="block-mock block-bool">Gemini AI Connected?</span>
+          <span class="block-mock block-reporter">Connection Status</span>
+          <span class="block-mock block-bool">Is AI responding?</span>
+        </div>
+
+        <h3 style="margin-top:20px;">🗑️ Management</h3>
+        <div class="block-list">
+          <span class="block-mock block-cmd">Delete API Key</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SECTION 5: Safety Checklist ── -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num" style="background:var(--accent-yellow);">5</div>
+        <h2>Safety Checklist</h2>
+      </div>
+
+      <div class="card">
+        <ul class="checklist">
+          <li>Never share your API key with friends or others</li>
+          <li>Never send your API key via chat, social media, or email</li>
+          <li>Never put your API key in visible blocks like "say" or "think"</li>
+          <li>Always enable "Shared Computer Mode" on public/school computers</li>
+          <li>Always run "Delete API Key" when done on shared computers</li>
+          <li>Avoid putting AI questions inside infinite loops — this drains quota fast</li>
+          <li>AI answers may not always be accurate — verify important information</li>
+          <li>The safety filter may block inappropriate questions — this is normal</li>
+        </ul>
+      </div>
+
+      <div class="alert alert-safe">
+        <span class="alert-icon">✅</span>
+        <div>
+          <strong>Don't worry:</strong> Your API key is NEVER included when you save or share a project. Anyone who opens your shared project will need to enter their own API key.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SECTION 6: FAQ ── -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num" style="background:var(--accent-blue);">?</div>
+        <h2>Frequently Asked Questions</h2>
+      </div>
+
+      <div class="card">
+        <h3>Q. Will I be charged?</h3>
+        <p>No, as long as you stay within the free quota. Google does not require a credit card for free tier access. Paid billing only activates if you manually register a payment method — there is no automatic charge.</p>
+      </div>
+
+      <div class="card">
+        <h3>Q. Will my key disappear if I close the tab?</h3>
+        <p>In Personal PC mode, your encrypted key persists within the same browser session. Closing the browser entirely removes it. In Shared PC mode, the key exists only in memory and vanishes the moment you close the tab.</p>
+      </div>
+
+      <div class="card">
+        <h3>Q. Can multiple students share one key?</h3>
+        <p>Technically yes, but <strong>not recommended.</strong> The quota is shared and will run out quickly, and exposing the key across multiple devices increases security risk. Each student should create their own key with their Google account.</p>
+      </div>
+
+      <div class="card">
+        <h3>Q. Which model should I choose?</h3>
+        <p><strong>Flash-Lite</strong> gives the most room (1,000 req/day) and is great for regular classroom use. Choose <strong>Flash</strong> or <strong>Pro</strong> when you need smarter answers for advanced projects.</p>
+      </div>
+
+      <div class="card">
+        <h3>Q. I'm getting "Blocked by safety filter" messages</h3>
+        <p>Google's safety filter blocked the question. This extension uses the strictest safety settings to protect K-12 students. Try rephrasing your question.</p>
+      </div>
+    </div>
+
+    <div class="footer">
+      Brixel AI · Google Gemini Extension Guide<br>
+      © 2026 Brixel AI. Google Gemini is a trademark of Google LLC.
+    </div>
+
+  </div><!-- /lang-en -->
+
+</div><!-- /container -->
+
+<script>
+function switchLang(lang) {
+  document.getElementById('lang-ko').classList.toggle('hidden', lang !== 'ko');
+  document.getElementById('lang-en').classList.toggle('hidden', lang !== 'en');
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent.trim() === (lang === 'ko' ? '한국어' : 'English'));
+  });
+}
+</script>
+
+</body>
+</html>
