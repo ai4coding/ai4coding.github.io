@@ -1,0 +1,1 @@
+firebase.initializeApp({apiKey:"AIzaSyAI-u8rBNkNpsiZ-bUUoOenjS2B3xIuCWs",authDomain:"brixel-k12hub.firebaseapp.com",projectId:"brixel-k12hub",storageBucket:"brixel-k12hub.firebasestorage.app",messagingSenderId:"621824381671",appId:"1:621824381671:web:d96283050031d73c430842"});
