@@ -1,0 +1,342 @@
+<!doctype html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="google" value="notranslate"><meta name="naver-site-verification" content="5eef0efe066878afa932b2e74860ddb7f1bef8e2"/><meta name="google-site-verification" content="xgOVbCZi3PpeCnMu7RpbNX2XqD1-7yEiw_CbcnHdO2I"/><title>AI&로봇 브릭셀-인공지능, 강화학습, 피지컬컴퓨팅 (Block Coding) 인공지능 브릭셀 | AI 브릭셀 | 로봇 브릭셀 - Artificial Intelligence Brixel, AI Brixel, Robot Brixel (블록코딩 교육)</title><meta name="description" content="무료 인공지능(AI) 브릭셀 및 로봇 브릭셀 웹 블록코딩 플랫폼. Artificial Intelligence Brixel과 Robot Brixel 기반으로 핸드트래킹, 강화학습, 아두이노/ESP32 피지컬 컴퓨팅을 지원합니다. AI 교육과 로봇 교육을 위한 최고의 블록코딩 도구입니다."><meta name="keywords" content="인공지능 브릭셀, AI브릭셀, 로봇 브릭셀, Artificial Intelligence Brixel, AI Brixel, Robot Brixel, 브릭셀, 블록코딩, 핸드트래킹 브릭셀, 피지컬컴퓨팅, 코딩교육, AI교육, 로봇교육, 블록코딩 강화학습, 아두이노 브릭셀, ESP32 브릭셀, 머신러닝 교육, 인공지능 교육, Brixel, Block Coding, Hand Tracking Brixel, Physical Computing, Coding Education, AI Education, Robot Education, Reinforcement Learning, Arduino Brixel, ESP32 Brixel, Machine Learning Education"><link rel="canonical" href="https://ai4coding.github.io/"><meta property="og:type" content="website"><meta property="og:url" content="https://ai4coding.github.io/"><meta property="og:title" content="인공지능 브릭셀 | AI 브릭셀 | 로봇 브릭셀 - AI&Robot Brixel"><meta property="og:description" content="무료 인공지능 브릭셀(AI Brixel)과 로봇 브릭셀(Robot Brixel) 웹 블록코딩 플랫폼. 핸드트래킹, 강화학습, 아두이노/ESP32 피지컬 컴퓨팅 지원. Artificial Intelligence 교육의 최적 도구입니다."><meta property="og:image" content="https://ai4coding.github.io/static/og-image.png"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="인공지능 브릭셀 | AI Brixel | Robot Brixel"><meta name="twitter:description" content="무료 AI 브릭셀과 로봇 브릭셀 플랫폼. 핸드트래킹, 강화학습, 피지컬 컴퓨팅 지원"><meta name="twitter:image" content="https://ai4coding.github.io/static/og-image.png"><script type="application/ld+json">{
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "브릭셀 에디터",
+      "alternateName": ["AI", "Robot", "인공지능", "Artificial Intelligence", "BRIXEL", "Brixel", "브릭셀", "AI브릭셀"],
+      "url": "https://ai4coding.github.io/",
+      "description": "무료 인공지능(AI) 브릭셀: 스크래치 호환 웹 블록코딩 플랫폼. 핸드트래킹, 강화학습, 아두이노/ESP32 피지컬 컴퓨팅을 지원하는 AI 교육 도구",
+      "applicationCategory": "EducationalApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "KRW"
+      },
+      "creator": {
+        "@type": "Organization",
+        "name": "AI4Coding"
+      },
+      "keywords": "인공지능 브릭셀, AI브릭셀, 로봇 브릭셀, Artificial Intelligence Brixel, AI Brixel, Robot Brixel, 블록코딩, 핸드트래킹, 강화학습, 피지컬컴퓨팅, AI교육, 로봇교육",
+      "inLanguage": ["ko", "en", "ja", "zh"],
+      "featureList": [
+        "핸드트래킹 (Hand Tracking)",
+        "강화학습 (Reinforcement Learning)",
+        "아두이노/ESP32 피지컬 컴퓨팅",
+        "블록 코딩 (Block Coding)",
+        "AI 교육",
+        "로봇 교육"
+      ]
+    }</script><script type="application/ld+json">{
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "브릭셀 에디터 (BRIXEL EDITOR)",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "5",
+        "ratingCount": "1"
+      }
+    }</script><link rel="shortcut icon" href="static/favicon.ico"><link rel="preconnect" href="https://www.gstatic.com" crossorigin><script defer="defer" src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script><script defer="defer" src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script><script defer="defer" src="static/firebase-init.js"></script><script defer="defer" src="./gui.js"></script></head><body><div id="brixel-splash" role="status" aria-live="polite"><img src="static/brixelai-logo.svg" alt="BrixelAI" width="270" height="61"><div class="bxs-bar"><i></i></div><p id="brixel-splash-msg"></p><p id="brixel-splash-sub"></p><button id="brixel-splash-reload" type="button" hidden></button></div><style>#brixel-splash{position:fixed;inset:0;z-index:2147483000;display:flex;flex-direction:column;align-items:center;
+          justify-content:center;gap:16px;background:#f9fafc;color:#30364a;transition:opacity .35s;
+          font-family:"Helvetica Neue",Helvetica,Arial,"Malgun Gothic",sans-serif}
+        #brixel-splash img{width:270px;max-width:70vw;height:auto}
+        #brixel-splash .bxs-bar{width:220px;max-width:60vw;height:6px;border-radius:3px;background:#e6e8f0;overflow:hidden}
+        #brixel-splash .bxs-bar i{display:block;width:40%;height:100%;border-radius:3px;
+          background:linear-gradient(90deg,#ff8c1a,#ffb347);animation:bxs-slide 1.2s ease-in-out infinite}
+        #brixel-splash p{margin:0;text-align:center;padding:0 16px;min-height:1.4em}
+        #brixel-splash-msg{font-size:15px;font-weight:700}
+        #brixel-splash-sub{font-size:13px;color:#7a8199}
+        #brixel-splash button{font:inherit;font-weight:700;padding:8px 18px;border-radius:8px;border:1px solid #c9cedc;
+          background:#fff;color:#30364a;cursor:pointer}
+        @keyframes bxs-slide{0%{transform:translateX(-110%)}100%{transform:translateX(260%)}}</style><script>(function () {
+          // 문구 = 번역 사전 gui.splash.*(80로케일) — 빌드 때 webpack.config.js(splashMessagesJson)가 여기에 심는다.
+          // 언어 고르는 순서는 편집기(src/lib/detect-locale.js)와 같다: 브라우저 언어 → 앞부분(pt-PT → pt) → 주소의 ?locale=/?lang= 가 이긴다.
+          var SPLASH = {"keys":["preparing","firstVisit","slow","failed","checkConnection","reload","projectLoading","pleaseWait","editorNotReady","projectFailed","emptyFile","noProjectFromLesson"],"rtl":["ar","ckb","fa","he"],"m":{"ab":["Аблокқәа зну AI аредактор архиара","Актәи аҭагалара азы секундқәак аҭахуп","Аинтернет имырласкәа аус ауазар, иаҳа аамҭа аҭахуп.","Иамуӡеит аредактор аҭагалара","Аинтернет аимадара гәашәҭ, нас ишәырҿыц адаҟьа","Аиҭадәықәҵара","Апроект аҭагалара…","Маҷк шәазыԥшы","Иамуӡеит аредактор архиара. Аинтернет имырласкәа аус ауазар, ишәырҿыц адаҟьа.","Иамуӡеит апроект аҭагалара:","Апроект афаил ҭацәуп","Иамуӡеит апроект аиура ахархәага адаҟьа аҟынтәи. Ахархәага адаҟьаҟны акнопка даҽазнык шәақәыӷәӷәа."],"af":["Die KI-blokredigeerder word voorberei","Die eerste keer neem dit 'n paar sekondes","Met stadige internet kan dit 'n bietjie langer neem","Die redigeerder kon nie laai nie","Gaan jou internetverbinding na en herlaai die bladsy","Herlaai","Besig om projek te laai …","Wag asseblief 'n oomblik","Die redigeerder kon nie gereedgemaak word nie. As jou internet stadig is, herlaai die bladsy.","Kon nie die projek laai nie:","Die projeklêer was leeg","Kon nie die projek van die lesbladsy ontvang nie. Kliek weer op die knoppie op die lesbladsy."],"am":["የAI ብሎክ ኮድ አርታዒ እየተዘጋጀ ነው","ለመጀመሪያ ጊዜ ሲከፈት ጥቂት ሰከንዶች ይወስዳል","ኢንተርኔቱ ቀርፋፋ ከሆነ ትንሽ ተጨማሪ ጊዜ ሊወስድ ይችላል","አርታዒውን መጫን አልተቻለም","የኢንተርኔት ግንኙነትዎን ያረጋግጡና ገጹን ያድሱ","አድስ","ፕሮጀክቱ በመጫን ላይ…","እባክዎ ትንሽ ይጠብቁ","አርታዒውን ማዘጋጀት አልተቻለም። ኢንተርኔቱ ቀርፋፋ ከሆነ ገጹን ያድሱ።","ፕሮጀክቱን መጫን አልተቻለም፦","የደረሰው የፕሮጀክት ፋይል ባዶ ነበር","ፕሮጀክቱን ከትምህርቱ ገጽ መቀበል አልተቻለም። በትምህርቱ ገጽ ላይ ያለውን ቁልፍ እንደገና ጠቅ ያድርጉ።"],"an":["Preparando l'editor de bloques con IA","A primera visita tarda qualques segundos","Con una connexión lenta puede tardar mas","No s'ha puesto cargar l'editor","Compreba a connexión y torna a cargar a pachina","Tornar a cargar","Cargando lo prochecto…","Aspera un inte","No s'ha puesto preparar l'editor. Si a connexión ye lenta, torna a cargar a pachina.","No s'ha puesto cargar lo prochecto:","O fichero d'o prochecto yera vuedo","No s'ha puesto recibir lo prochecto dende a pachina d'a lección. Torna a fer clic en o botón d'ixa pachina."],"ar":["جارٍ تجهيز محرر الذكاء الاصطناعي للبرمجة باللبنات","تستغرق الزيارة الأولى بضع ثوانٍ","قد يستغرق الأمر وقتًا أطول قليلًا إذا كان الإنترنت بطيئًا","تعذّر تحميل المحرر","تحقق من اتصالك بالإنترنت وأعد تحميل الصفحة","إعادة التحميل","جارٍ تحميل المشروع…","يرجى الانتظار قليلًا","تعذّر تجهيز المحرر. إذا كان الإنترنت بطيئًا، فأعد تحميل الصفحة.","تعذّر تحميل المشروع:","ملف المشروع المستلم فارغ","تعذّر استلام المشروع من صفحة الدرس. انقر الزر في صفحة الدرس مرة أخرى."],"ast":["Preparando l'editor de bloques con IA","La primera visita tarda unos segundos","Con una conexón lenta pue tardar un poco más","Nun se pudo cargar l'editor","Comprueba la conexón y recarga la páxina","Recargar","Cargando'l proyeutu…","Espera un momentu","Nun se pudo preparar l'editor. Si la conexón ye lenta, recarga la páxina.","Nun se pudo cargar el proyeutu:","El ficheru del proyeutu taba baleru","Nun se pudo recibir el proyeutu de la páxina de la lleición. Calca otra vuelta nel botón d'esa páxina."],"az":["Süni intellektli blok kod redaktoru hazırlanır","İlk açılış bir neçə saniyə çəkir","İnternet yavaşdırsa, bir az daha uzun çəkə bilər","Redaktor yüklənmədi","İnternet bağlantınızı yoxlayın və səhifəni yeniləyin","Yenilə","Layihə yüklənir…","Zəhmət olmasa, bir az gözləyin","Redaktoru hazırlamaq alınmadı. İnternet yavaşdırsa, səhifəni yeniləyin.","Layihə yüklənə bilmədi:","Alınan layihə faylı boş idi","Layihəni dərs səhifəsindən qəbul etmək mümkün olmadı. Dərs səhifəsindəki düyməyə yenidən klikləyin."],"be":["Рыхтуем рэдактар блокавага праграмавання са ШІ","Першы запуск займае некалькі секунд","Калі інтэрнэт павольны, гэта можа заняць крыху больш часу","Рэдактар не загрузіўся","Правер падключэнне да інтэрнэту і перазагрузі старонку","Перазагрузіць","Загрузка праекта…","Пачакай крыху","Не атрымалася падрыхтаваць рэдактар. Калі інтэрнэт павольны, перазагрузі старонку.","Не атрымалася загрузіць праект:","Атрыманы файл праекта пусты","Не ўдалося атрымаць праект са старонкі ўрока. Націсні кнопку на старонцы ўрока яшчэ раз."],"bg":["Подготвяме редактора за блоково програмиране с ИИ","Първото отваряне отнема няколко секунди","При бавен интернет това може да отнеме малко повече време","Редакторът не се зареди","Провери връзката с интернет и презареди страницата","Презареждане","Зареждане на проекта…","Моля, изчакай малко","Редакторът не успя да се подготви. Ако интернетът е бавен, презареди страницата.","Проектът не можа да се зареди:","Полученият файл на проекта е празен","Проектът не беше получен от страницата на урока. Натисни бутона на страницата на урока отново."],"bn":["AI ব্লক-কোডিং এডিটর প্রস্তুত হচ্ছে","প্রথমবার খুলতে কয়েক সেকেন্ড লাগে","ইন্টারনেট ধীর হলে আরেকটু বেশি সময় লাগতে পারে","এডিটর লোড হয়নি","ইন্টারনেট সংযোগ দেখে নাও, তারপর পেজটি রিলোড করো","রিলোড করো","প্রজেক্ট লোড হচ্ছে…","একটু অপেক্ষা করো","এডিটর প্রস্তুত করা যায়নি। ইন্টারনেট ধীর হলে পেজটি রিলোড করো।","প্রজেক্টটি লোড করা যায়নি:","প্রজেক্ট ফাইলটি খালি ছিল","পাঠের পেজ থেকে প্রজেক্টটি পাওয়া যায়নি। পাঠের পেজে বোতামটিতে আবার ক্লিক করো।"],"ca":["S'està preparant l'editor de blocs amb IA","La primera visita triga uns segons","Amb una connexió lenta pot trigar una mica més","No s'ha pogut carregar l'editor","Comprova la connexió i torna a carregar la pàgina","Recarrega","S'està carregant el projecte…","Espera un moment","No s'ha pogut preparar l'editor. Si la connexió és lenta, torna a carregar la pàgina.","No s'ha pogut carregar el projecte:","El fitxer del projecte era buit","No s'ha pogut rebre el projecte de la pàgina de la lliçó. Torna a prémer el botó d'aquella pàgina."],"ckb":["ئێدیتەری AI بۆ کۆدنووسین بە بلۆک ئامادە دەکرێت","یەکەم جار چەند چرکەیەک دەخایەنێت","ئەگەر ئینتەرنێت خاو بێت، لەوانەیە کەمێک زیاتر بخایەنێت","ئێدیتەرەکە ئامادە نەبوو","پەیوەندی ئینتەرنێتەکەت بپشکنە و پەڕەکە تازە بکەرەوە","تازەکردنەوە","ئامادەکردنی پڕۆژە…","تکایە کەمێک چاوەڕێ بکە","نەتوانرا ئێدیتەرەکە ئامادە بکرێت. ئەگەر ئینتەرنێت خاو بێت، پەڕەکە تازە بکەرەوە.","نەتوانرا پڕۆژەکە ئامادە بکرێت:","پەڕگەی پڕۆژەکە بەتاڵ بوو","نەتوانرا پڕۆژەکە لە پەڕەی وانەکەوە وەربگیرێت. دووبارە کرتە لەسەر دوگمەکەی پەڕەی وانەکە بکە."],"cs":["Připravuji AI editor pro blokové programování","První otevření trvá několik sekund","Při pomalém připojení to může trvat o něco déle","Editor se nenačetl","Zkontroluj připojení k internetu a znovu načti stránku","Znovu načíst","Nahrávám projekt…","Chvíli počkej","Editor se nepodařilo připravit. Pokud máš pomalé připojení, znovu načti stránku.","Projekt se nepodařilo nahrát:","Přijatý soubor projektu je prázdný","Projekt se nepodařilo přijmout ze stránky lekce. Klikni znovu na tlačítko na stránce lekce."],"cy":["Yn paratoi'r golygydd codio blociau AI","Mae'r ymweliad cyntaf yn cymryd ychydig eiliadau","Gall hyn gymryd ychydig yn hirach ar gysylltiad araf","Methodd y golygydd â llwytho","Gwiriwch eich cysylltiad ac ail-lwythwch y dudalen","Ail-lwytho","Yn llwytho'r project …","Arhoswch eiliad","Methu paratoi'r golygydd. Os yw'ch cysylltiad yn araf, ail-lwythwch y dudalen.","Methu llwytho'r project:","Roedd ffeil y project yn wag","Methu derbyn y project o dudalen y wers. Cliciwch y botwm ar dudalen y wers eto."],"da":["Forbereder AI-editoren til blokprogrammering","Første gang tager det et par sekunder","Med langsomt internet kan det tage lidt længere tid","Editoren kunne ikke indlæses","Tjek din internetforbindelse, og genindlæs siden","Genindlæs","Indlæser projekt …","Vent et øjeblik","Editoren kunne ikke gøres klar. Hvis dit internet er langsomt, så genindlæs siden.","Projektet kunne ikke indlæses:","Projektfilen var tom","Projektet kunne ikke modtages fra lektionssiden. Klik på knappen på lektionssiden igen."],"de":["Der KI-Blockeditor wird vorbereitet","Beim ersten Besuch dauert es ein paar Sekunden","Bei langsamem Internet kann es etwas länger dauern","Der Editor konnte nicht geladen werden","Überprüfe deine Internetverbindung und lade die Seite neu","Neu laden","Projekt wird geladen …","Bitte warte einen Moment","Der Editor konnte nicht vorbereitet werden. Wenn dein Internet langsam ist, lade die Seite neu.","Das Projekt konnte nicht geladen werden:","Die Projektdatei war leer","Das Projekt konnte nicht von der Unterrichtsseite empfangen werden. Klicke dort noch einmal auf den Knopf."],"el":["Ετοιμάζουμε τον επεξεργαστή μπλοκ με AI","Το πρώτο άνοιγμα διαρκεί λίγα δευτερόλεπτα","Με αργή σύνδεση μπορεί να πάρει λίγο περισσότερο","Ο επεξεργαστής δεν φορτώθηκε","Έλεγξε τη σύνδεσή σου και φόρτωσε ξανά τη σελίδα","Επαναφόρτωση","Φόρτωση έργου…","Περίμενε λίγο","Ο επεξεργαστής δεν μπόρεσε να ετοιμαστεί. Αν η σύνδεση είναι αργή, φόρτωσε ξανά τη σελίδα.","Η φόρτωση του έργου απέτυχε:","Το αρχείο έργου που λήφθηκε είναι κενό","Δεν ήταν δυνατή η λήψη του έργου από τη σελίδα του μαθήματος. Πάτησε ξανά το κουμπί στη σελίδα του μαθήματος."],"en":["Getting the AI block-coding editor ready","The first visit takes a few seconds","This can take a little longer on a slow connection","The editor did not load","Check your connection and reload the page","Reload","Loading the project…","Please wait a moment","The editor couldn't get ready. If your connection is slow, reload the page.","Couldn't load the project:","The project file was empty","Couldn't receive the project from the lesson page. Click the button on the lesson page again."],"eo":["La AI-bloka redaktilo prepariĝas","La unua vizito daŭras kelkajn sekundojn","Kun malrapida konekto tio povas daŭri iom pli longe","La redaktilo ne ŝargiĝis","Kontrolu vian konekton kaj reŝargu la paĝon","Reŝargi","Ŝargado de la projekto…","Bonvolu atendi momenton","La redaktilo ne povis prepariĝi. Se via konekto estas malrapida, reŝargu la paĝon.","Ne eblis ŝargi la projekton:","La projektodosiero estis malplena","Ne eblis ricevi la projekton de la leciona paĝo. Alklaku denove la butonon en la leciona paĝo."],"es-419":["Preparando el editor de bloques con IA","La primera visita tarda unos segundos","Con una conexión lenta puede tardar un poco más","No pudimos cargar el editor","Revisa tu conexión y recarga la página","Recargar","Cargando el proyecto…","Espera un momento","No pudimos preparar el editor. Si tu conexión es lenta, recarga la página.","No pudimos cargar el proyecto:","El archivo del proyecto estaba vacío","No pudimos recibir el proyecto de la página de la lección. Vuelve a hacer clic en el botón de esa página."],"es":["Preparando el editor de bloques con IA","La primera visita tarda unos segundos","Con una conexión lenta puede tardar un poco más","No se ha podido cargar el editor","Revisa tu conexión y vuelve a cargar la página","Volver a cargar","Cargando el proyecto…","Espera un momento","No se ha podido preparar el editor. Si tu conexión es lenta, vuelve a cargar la página.","No se ha podido cargar el proyecto:","El archivo del proyecto estaba vacío","No se ha podido recibir el proyecto de la página de la lección. Vuelve a hacer clic en el botón de esa página."],"et":["AI-plokiredaktori ettevalmistamine","Esimene külastus võtab mõne sekundi","Aeglase internetiga võib see veidi kauem aega võtta","Redaktori laadimine ei õnnestunud","Kontrolli internetiühendust ja laadi leht uuesti","Laadi uuesti","Projekti laadimine …","Palun oota hetk","Redaktori ettevalmistamine ei õnnestunud. Kui internet on aeglane, laadi leht uuesti.","Projekti laadimine ei õnnestunud:","Projektifail oli tühi","Projekti vastuvõtmine õppetunni lehelt ei õnnestunud. Klõpsa õppetunni lehel uuesti nupule."],"eu":["Adimen artifizialeko bloke-editorea prestatzen","Lehen bisitak segundo batzuk behar ditu","Konexioa motela bada, pixka bat gehiago iraun dezake","Ezin izan da editorea kargatu","Egiaztatu interneteko konexioa eta kargatu berriro orria","Kargatu berriro","Proiektua kargatzen…","Itxaron une batez, mesedez","Ezin izan da editorea prestatu. Konexioa motela bada, kargatu berriro orria.","Ezin izan da proiektua kargatu:","Jasotako proiektu-fitxategia hutsik zegoen","Ezin izan da proiektua jaso ikasgaiaren orritik. Klikatu berriro ikasgaiaren orriko botoia."],"fa":["ویرایشگر کدنویسی بلوکی هوش مصنوعی آماده می‌شود","بار اول چند ثانیه طول می‌کشد","اگر اینترنت کند باشد، ممکن است کمی بیشتر طول بکشد","ویرایشگر بارگذاری نشد","اتصال اینترنت را بررسی کنید و صفحه را دوباره بارگذاری کنید","بارگذاری مجدد","در حال بارگذاری پروژه…","لطفاً کمی صبر کنید","ویرایشگر آماده نشد. اگر اینترنت کند است، صفحه را دوباره بارگذاری کنید.","پروژه بارگذاری نشد:","فایل پروژه خالی بود","پروژه از صفحهٔ درس دریافت نشد. دوباره روی دکمهٔ صفحهٔ درس کلیک کنید."],"fi":["Valmistellaan tekoälyn lohko-ohjelmointieditoria","Ensimmäinen käynti kestää muutaman sekunnin","Hitaalla yhteydellä tämä voi kestää hieman kauemmin","Editoria ei voitu ladata","Tarkista internetyhteys ja lataa sivu uudelleen","Lataa uudelleen","Projektia ladataan …","Odota hetki","Editoria ei saatu valmiiksi. Jos yhteys on hidas, lataa sivu uudelleen.","Projektia ei voitu ladata:","Projektitiedosto oli tyhjä","Projektia ei saatu oppitunnin sivulta. Klikkaa painiketta oppitunnin sivulla uudelleen."],"fil":["Inihahanda ang AI block-coding editor","Ilang segundo ang aabutin sa unang pagbukas","Kung mabagal ang internet, maaaring medyo matagalan ito","Hindi na-load ang editor","Suriin ang koneksyon mo at i-reload ang pahina","I-reload","Nilo-load ang proyekto…","Pakihintay sandali","Hindi naihanda ang editor. Kung mabagal ang internet mo, i-reload ang pahina.","Hindi ma-load ang proyekto:","Walang laman ang file ng proyekto","Hindi natanggap ang proyekto mula sa pahina ng aralin. I-click muli ang button sa pahina ng aralin."],"fr":["Préparation de l'éditeur de blocs avec IA","La première visite prend quelques secondes","Si ta connexion est lente, cela peut être un peu plus long","Impossible de charger l'éditeur","Vérifie ta connexion et recharge la page","Recharger","Chargement du projet…","Patiente un instant","Impossible de préparer l'éditeur. Si ta connexion est lente, recharge la page.","Impossible de charger le projet :","Le fichier du projet était vide","Impossible de recevoir le projet depuis la page de la leçon. Clique à nouveau sur le bouton de cette page."],"fy":["De AI-blokkeneditor wurdt klearmakke","De earste kear duorret it in pear sekonden","Mei stadich ynternet kin it wat langer duorje","De editor koe net laden wurde","Kontrolearje jo ynternetferbining en fernij de side","Op 'e nij lade","Projekt wurdt laden …","Wachtsje efkes","De editor koe net klearmakke wurde. As jo ynternet stadich is, fernij de side dan.","It projekt koe net laden wurde:","It projektbestân wie leech","It projekt koe net fan 'e lesside ûntfongen wurde. Klikje nochris op de knop op 'e lesside."],"ga":["Eagarthóir códaithe bloc AI á ullmhú","Tógann an chéad chuairt cúpla soicind","Tógfaidh sé tamall níos faide má tá an t-idirlíon mall","Níorbh fhéidir an t-eagarthóir a lódáil","Seiceáil do cheangal idirlín agus athlódáil an leathanach","Athlódáil","Tionscadal á lódáil …","Fan nóiméad, le do thoil","Níorbh fhéidir an t-eagarthóir a ullmhú. Má tá an t-idirlíon mall, athlódáil an leathanach.","Níorbh fhéidir an tionscadal a lódáil:","Bhí comhad an tionscadail folamh","Níorbh fhéidir an tionscadal a fháil ón leathanach ceachta. Cliceáil an cnaipe ar an leathanach ceachta arís."],"gd":["Ag ullachadh deasaiche nam blocaichean AI","Bheir a’ chiad tadhal beagan diogan","Bheir e beagan nas fhaide ma tha an ceangal slaodach","Cha deach an deasaiche a luchdadh","Thoir sùil air a’ cheangal is ath-luchdaich an duilleag","Ath-luchdaich","A’ luchdadh a’ phròiseict…","Fuirich greiseag","Cha b’ urrainn dhuinn an deasaiche ullachadh. Ma tha an ceangal slaodach, ath-luchdaich an duilleag.","Cha deach am pròiseact a luchdadh:","Bha faidhle a’ phròiseict falamh","Cha d’ fhuair sinn am pròiseact bho dhuilleag an leasain. Briog air a’ phutan air duilleag an leasain a-rithist."],"gl":["Estase a preparar o editor de bloques con IA","A primeira visita leva uns segundos","Cunha conexión lenta pode tardar un pouco máis","Non foi posíbel cargar o editor","Comproba a conexión e actualiza a páxina","Actualizar","Estase a cargar o proxecto…","Agarda un momento","Non foi posíbel preparar o editor. Se a conexión é lenta, actualiza a páxina.","Non foi posíbel cargar o proxecto:","O ficheiro do proxecto estaba baleiro","Non foi posíbel recibir o proxecto desde a páxina da lección. Preme de novo o botón desa páxina."],"ha":["Ana shirya editan AI na shirye-shirye da tubalai","Buɗewa ta farko tana ɗaukar ƴan daƙiƙu","Idan intanet yana jinkiri, zai iya ɗaukar ƙarin lokaci","An kasa buɗe edita","Duba haɗin intanet ɗinka sannan ka sabunta shafin","Sabunta shafi","Ana loda aikin…","Da fatan za ka jira ɗan lokaci","An kasa shirya edita. Idan intanet yana jinkiri, ka sabunta shafin.","An kasa buɗe aikin:","Fayil ɗin aikin da aka karɓa babu komai a ciki","An kasa karɓar aikin daga shafin darasi. Ka sake danna madannin da ke shafin darasi."],"he":["מכינים את עורך תכנות הבלוקים לבינה מלאכותית","הביקור הראשון לוקח כמה שניות","בחיבור איטי זה עשוי לקחת קצת יותר זמן","העורך לא נטען","בדקו את חיבור האינטרנט וטענו מחדש את הדף","טעינה מחדש","טוען את הפרויקט…","המתינו רגע, בבקשה","לא הצלחנו להכין את העורך. אם החיבור איטי, טענו מחדש את הדף.","לא הצלחנו לטעון את הפרויקט:","קובץ הפרויקט שהתקבל היה ריק","לא הצלחנו לקבל את הפרויקט מדף השיעור. לחצו שוב על הכפתור בדף השיעור."],"hi":["AI ब्लॉक-कोडिंग एडिटर तैयार हो रहा है","पहली बार खुलने में कुछ सेकंड लगते हैं","इंटरनेट धीमा हो तो थोड़ा ज़्यादा समय लग सकता है","एडिटर लोड नहीं हुआ","इंटरनेट कनेक्शन जाँचें और पेज फिर से लोड करें","फिर से लोड करें","प्रोजेक्ट लोड हो रहा है…","कृपया थोड़ा इंतज़ार करें","एडिटर तैयार नहीं हो सका। इंटरनेट धीमा हो तो पेज फिर से लोड करें।","प्रोजेक्ट लोड नहीं हो सका:","प्रोजेक्ट फ़ाइल खाली थी","पाठ के पेज से प्रोजेक्ट नहीं मिल सका। पाठ के पेज पर बटन फिर से क्लिक करें।"],"hr":["Pripremamo AI uređivač za programiranje blokovima","Prvo otvaranje traje nekoliko sekundi","Ako je internet spor, ovo može potrajati malo dulje","Uređivač se nije učitao","Provjeri internetsku vezu i ponovno učitaj stranicu","Ponovno učitaj","Učitavanje projekta…","Pričekaj malo","Uređivač se nije uspio pripremiti. Ako je internet spor, ponovno učitaj stranicu.","Projekt se nije mogao učitati:","Primljena datoteka projekta je prazna","Projekt nije stigao sa stranice lekcije. Ponovno klikni gumb na stranici lekcije."],"ht":["N ap prepare editè blòk AI a","Premye vizit la pran kèk segonn","Si koneksyon an dousman, sa ka pran yon ti tan anplis","Editè a pa t ka chaje","Verifye koneksyon ou epi rechaje paj la","Rechaje","N ap chaje pwojè a…","Tanpri tann yon ti moman","Editè a pa t ka prepare. Si koneksyon ou dousman, rechaje paj la.","Nou pa t ka chaje pwojè a:","Fichye pwojè a te vid","Nou pa t ka resevwa pwojè a nan paj leson an. Klike sou bouton an ankò nan paj leson an."],"hu":["A blokkprogramozó MI-szerkesztő előkészítése","Az első látogatás néhány másodpercig tart","Lassú kapcsolat esetén ez kicsit tovább tarthat","A szerkesztőt nem sikerült betölteni","Ellenőrizd az internetkapcsolatot, és töltsd újra az oldalt","Újratöltés","Projekt betöltése …","Kérlek, várj egy kicsit","A szerkesztőt nem sikerült előkészíteni. Ha lassú az internet, töltsd újra az oldalt.","A projektet nem sikerült betölteni:","A projektfájl üres volt","Nem sikerült megkapni a projektet a tanóra oldaláról. Kattints újra a gombra a tanóra oldalán."],"hy":["Պատրաստվում է AI բլոկային ծրագրավորման խմբագիրը","Առաջին բացումը տևում է մի քանի վայրկյան","Դանդաղ ինտերնետով սա կարող է մի փոքր ավելի երկար տևել","Խմբագիրը չբեռնվեց","Ստուգեք ինտերնետային կապը և թարմացրեք էջը","Նորից բեռնել","Նախագծի բեռնում…","Խնդրում ենք մի փոքր սպասել","Խմբագիրը չհաջողվեց պատրաստել։ Եթե ինտերնետը դանդաղ է, թարմացրեք էջը։","Նախագիծը չհաջողվեց բեռնել՝","Ստացված նախագծի ֆայլը դատարկ է","Չհաջողվեց ստանալ նախագիծը դասի էջից։ Կրկին սեղմեք կոճակը դասի էջում։"],"id":["Menyiapkan editor pemrograman balok AI","Saat pertama dibuka, perlu beberapa detik","Jika koneksi internet lambat, bisa sedikit lebih lama","Editor gagal dimuat","Periksa koneksi internetmu, lalu muat ulang halaman","Muat ulang","Memuat karya…","Mohon tunggu sebentar","Editor tidak bisa disiapkan. Jika koneksi internetmu lambat, muat ulang halaman.","Karya tidak bisa dimuat:","Berkas karya kosong","Karya tidak bisa diterima dari halaman pelajaran. Klik lagi tombol di halaman pelajaran."],"is":["Verið að undirbúa kubbaritilinn með gervigreind","Fyrsta heimsóknin tekur nokkrar sekúndur","Ef nettengingin er hæg getur þetta tekið aðeins lengur","Ekki tókst að hlaða ritlinum inn","Athugaðu nettenginguna og endurnýjaðu síðuna","Endurhlaða","Hleð inn verkefni …","Bíddu augnablik","Ekki tókst að gera ritilinn tilbúinn. Ef nettengingin er hæg skaltu endurnýja síðuna.","Ekki tókst að hlaða verkefninu inn:","Verkefnisskráin var tóm","Ekki tókst að taka við verkefninu frá kennslusíðunni. Smelltu aftur á hnappinn á kennslusíðunni."],"it":["Preparazione dell'editor a blocchi con IA","La prima visita richiede qualche secondo","Con una connessione lenta può volerci un po' di più","Impossibile caricare l'editor","Controlla la connessione e ricarica la pagina","Ricarica","Caricamento del progetto…","Attendi un momento","Impossibile preparare l'editor. Se la connessione è lenta, ricarica la pagina.","Impossibile caricare il progetto:","Il file del progetto era vuoto","Impossibile ricevere il progetto dalla pagina della lezione. Clicca di nuovo il pulsante su quella pagina."],"ja-Hira":["AIブロックコーディングエディターをじゅんびしています","はじめてひらくときは、すうびょうかかります","インターネットがおそいと、もうすこしじかんがかかることがあります","エディターをよみこめませんでした","インターネットのせつぞくをたしかめて、ページをさいよみこみしてください","さいよみこみ","プロジェクトをよみこみちゅう…","しばらくおまちください","エディターをじゅんびできませんでした。インターネットがおそいときは、ページをさいよみこみしてください。","プロジェクトをよみこめませんでした：","プロジェクトファイルがからっぽでした","じゅぎょうのページからプロジェクトをうけとれませんでした。じゅぎょうのページで、もういちどボタンをクリックしてください。"],"ja":["AIブロックコーディングエディターを準備しています","初めて開くときは数秒かかります","インターネットが遅いと、もう少し時間がかかることがあります","エディターを読み込めませんでした","インターネット接続を確認して、ページを再読み込みしてください","再読み込み","プロジェクトを読み込み中…","しばらくお待ちください","エディターを準備できませんでした。インターネットが遅い場合は、ページを再読み込みしてください。","プロジェクトを読み込めませんでした：","プロジェクトファイルが空でした","授業のページからプロジェクトを受け取れませんでした。授業のページで、もう一度ボタンをクリックしてください。"],"ka":["AI ბლოკური პროგრამირების რედაქტორი მზადდება","პირველ გახსნას რამდენიმე წამი სჭირდება","ნელი ინტერნეტით შეიძლება ცოტა მეტი დრო დასჭირდეს","რედაქტორი ვერ ჩაიტვირთა","შეამოწმე ინტერნეტ-კავშირი და გადატვირთე გვერდი","გადატვირთვა","პროექტი იტვირთება…","ცოტა მოიცადე","რედაქტორის მომზადება ვერ მოხერხდა. თუ ინტერნეტი ნელია, გადატვირთე გვერდი.","პროექტის ჩატვირთვა ვერ მოხერხდა:","მიღებული პროექტის ფაილი ცარიელია","გაკვეთილის გვერდიდან პროექტის მიღება ვერ მოხერხდა. გაკვეთილის გვერდზე ღილაკს ხელახლა დააჭირე."],"kk":["Жасанды интеллект блок редакторы дайындалуда","Алғаш ашқанда бірнеше секунд кетеді","Интернет баяу болса, сәл ұзағырақ созылуы мүмкін","Редактор жүктелмеді","Интернет байланысын тексеріп, бетті қайта жүктеңіз","Қайта жүктеу","Проект жүктелуде…","Сәл күте тұрыңыз","Редакторды дайындау мүмкін болмады. Интернет баяу болса, бетті қайта жүктеңіз.","Проектті жүктеу мүмкін болмады:","Проект файлы бос болып шықты","Сабақ бетінен проектті алу мүмкін болмады. Сабақ бетіндегі батырманы қайта басыңыз."],"km":["កំពុងរៀបចំកម្មវិធីសរសេរកូដប្លុក AI","ការបើកលើកដំបូងចំណាយពេលពីរបីវិនាទី","ប្រសិនបើអ៊ីនធឺណិតយឺត វាអាចចំណាយពេលយូរជាងនេះបន្តិច","មិនអាចបើកកម្មវិធីសរសេរកូដបានទេ","សូមពិនិត្យការតភ្ជាប់អ៊ីនធឺណិត ហើយដំណើរការទំព័រជាថ្មី","ដំណើរការជាថ្មី","កំពុងដំណើរការកិច្ចការ…","សូមរង់ចាំបន្តិច","មិនអាចរៀបចំកម្មវិធីសរសេរកូដបានទេ។ ប្រសិនបើអ៊ីនធឺណិតយឺត សូមដំណើរការទំព័រជាថ្មី។","មិនអាចបើកកិច្ចការបានទេ៖","ឯកសារកិច្ចការទទេ","មិនអាចទទួលកិច្ចការពីទំព័រមេរៀនបានទេ។ សូមចុចប៊ូតុងនៅលើទំព័រមេរៀនម្តងទៀត។"],"ko":["AI 블록코딩 에디터를 준비하고 있어요","처음 열 때는 몇 초 걸려요","인터넷이 느리면 조금 더 걸릴 수 있어요","에디터를 불러오지 못했어요","인터넷 연결을 확인하고 새로고침해 주세요","새로고침","작품을 불러오는 중입니다…","잠시만 기다려 주세요","에디터를 준비하지 못했습니다. 인터넷이 느리면 새로고침해 주세요.","작품을 불러오지 못했습니다:","받은 작품 파일이 비어 있습니다","수업 페이지에서 작품을 받지 못했습니다. 수업 페이지에서 다시 눌러 주세요."],"ku":["Edîtora kodkirina blokan bi AI tê amadekirin","Cara yekem çend çirke digire","Heke înternet hêdî be, dibe ku hinekî zêdetir bidome","Edîtor nehat barkirin","Girêdana înternetê kontrol bike û rûpelê dîsa bar bike","Dîsa bar bike","Proje tê barkirin…","Ji kerema xwe hinekî bisekine","Edîtor amade nebû. Heke înternet hêdî be, rûpelê dîsa bar bike.","Proje nehat barkirin:","Pelgeya projeyê vala bû","Proje ji rûpela dersê nehat wergirtin. Li ser rûpela dersê dîsa pêlî bişkokê bike."],"lt":["Ruošiamas DI blokinio programavimo redaktorius","Pirmas atidarymas užtrunka kelias sekundes","Jei internetas lėtas, tai gali užtrukti šiek tiek ilgiau","Nepavyko įkelti redaktoriaus","Patikrink interneto ryšį ir atnaujink puslapį","Atnaujinti","Kraunamas projektas…","Palauk akimirką","Nepavyko paruošti redaktoriaus. Jei internetas lėtas, atnaujink puslapį.","Nepavyko įkelti projekto:","Gautas projekto failas tuščias","Nepavyko gauti projekto iš pamokos puslapio. Pamokos puslapyje dar kartą spustelėk mygtuką."],"lv":["Gatavo MI bloku programmēšanas redaktoru","Pirmā atvēršana aizņem dažas sekundes","Ja internets ir lēns, tas var ilgt nedaudz ilgāk","Redaktors neielādējās","Pārbaudi interneta savienojumu un pārlādē lapu","Pārlādēt","Ielādē projektu…","Lūdzu, uzgaidi mirkli","Neizdevās sagatavot redaktoru. Ja internets ir lēns, pārlādē lapu.","Neizdevās ielādēt projektu:","Saņemtais projekta fails ir tukšs","Neizdevās saņemt projektu no nodarbības lapas. Nodarbības lapā vēlreiz noklikšķini uz pogas."],"mi":["Kei te whakarite i te ētita paraka AI","Ka pau ētahi hēkona i te toronga tuatahi","Ka roa ake pea mēnā he pōturi tō ipurangi","Kāore i taea te uta i te ētita","Tirohia tō hononga ipurangi, ā, whakahoungia te whārangi","Whakahou","Kei te utaina te kaupapa …","Tatari koa mō tētahi wā poto","Kāore i taea te whakarite i te ētita. Mēnā he pōturi tō ipurangi, whakahoungia te whārangi.","Kāore i taea te uta i te kaupapa:","I kautahanga te kōnae kaupapa","Kāore i taea te whiwhi i te kaupapa mai i te whārangi akoranga. Pāwhiria anō te pātene i te whārangi akoranga."],"mn":["AI блок кодлолын засварлагчийг бэлтгэж байна","Анх нээхэд хэдэн секунд болно","Интернэт удаан бол арай удаж магадгүй","Засварлагч ачаалагдсангүй","Интернэт холболтоо шалгаад хуудсаа дахин ачаалаарай","Дахин ачаалах","Төслийг ачаалж байна…","Түр хүлээнэ үү","Засварлагчийг бэлтгэж чадсангүй. Интернэт удаан бол хуудсаа дахин ачаалаарай.","Төслийг ачаалж чадсангүй:","Төслийн файл хоосон байсан","Хичээлийн хуудаснаас төслийг хүлээж авч чадсангүй. Хичээлийн хуудсан дээрх товчийг дахин дараарай."],"nb":["Forbereder KI-editoren for blokkprogrammering","Første gang tar det noen sekunder","Med tregt internett kan det ta litt lenger tid","Kunne ikke laste inn editoren","Sjekk internettforbindelsen og last inn siden på nytt","Last på nytt","Laster prosjekt …","Vent et øyeblikk","Editoren kunne ikke gjøres klar. Hvis internettet er tregt, last inn siden på nytt.","Kunne ikke laste inn prosjektet:","Prosjektfilen var tom","Kunne ikke motta prosjektet fra leksjonssiden. Klikk på knappen på leksjonssiden igjen."],"nl":["De AI-blokkeneditor wordt klaargezet","De eerste keer duurt het een paar seconden","Met traag internet kan het wat langer duren","De editor kon niet worden geladen","Controleer je internetverbinding en laad de pagina opnieuw","Opnieuw laden","Project laden …","Even geduld","De editor kon niet worden klaargezet. Als je internet traag is, laad de pagina dan opnieuw.","Het project kon niet worden geladen:","Het projectbestand was leeg","Het project kon niet worden ontvangen van de lespagina. Klik nog een keer op de knop op de lespagina."],"nn":["Førebur KI-editoren for blokkprogrammering","Første gongen tek det nokre sekund","Med tregt internett kan det ta litt lengre tid","Klarte ikkje lasta inn editoren","Sjekk internettsambandet og last inn sida på nytt","Last på nytt","Lastar inn prosjektet …","Vent eit augeblikk","Klarte ikkje gjera editoren klar. Viss internettet er tregt, last inn sida på nytt.","Klarte ikkje lasta inn prosjektet:","Prosjektfila var tom","Klarte ikkje ta imot prosjektet frå leksjonssida. Trykk på knappen på leksjonssida igjen."],"nso":["Re lokišetša editor ya AI ya khoutu ka dipoloko","Lekga la mathomo le tšea metsotswana e sego kae","Ge inthanete e nanya, go ka tšea nako ye telele go feta","Editor e paletšwe ke go laišega","Lekola kgokagano ya inthanete gomme o tsošeletše letlakala","Tsošeletša","E laiša projeke…","Hle leta motsotswana","Editor e paletšwe ke go itokišetša. Ge inthanete e nanya, tsošeletša letlakala.","Projeke e paletšwe ke go laišega:","Faele ya projeke e be e se na selo","Go paletšwe go amogela projeke go tšwa letlakaleng la thuto. Tobetša konopi letlakaleng la thuto gape."],"oc":["A preparar l'editor de blòcs amb IA","La primièra visita pren qualques segondas","Amb una connexion lenta, pòt prendre un pauc mai de temps","Posquèt pas cargar l'editor","Verifica ta connexion e torna cargar la pagina","Tornar cargar","A cargar lo projècte…","Espèra un moment","Posquèt pas preparar l'editor. Se ta connexion es lenta, torna cargar la pagina.","Posquèt pas cargar lo projècte :","Lo fichièr del projècte èra void","Posquèt pas recebre lo projècte de la pagina de la leiçon. Clica tornamai sul boton d'aquela pagina."],"or":["AI ବ୍ଲକ୍ କୋଡିଂ ସମ୍ପାଦକ ପ୍ରସ୍ତୁତ ହେଉଛି","ପ୍ରଥମ ଥର ଖୋଲିବାକୁ କିଛି ସେକେଣ୍ଡ ଲାଗେ","ଇଣ୍ଟରନେଟ୍ ଧୀର ଥିଲେ ଟିକେ ଅଧିକ ସମୟ ଲାଗିପାରେ","ସମ୍ପାଦକ ଲୋଡ୍ ହେଲା ନାହିଁ","ଇଣ୍ଟରନେଟ୍ ସଂଯୋଗ ଯାଞ୍ଚ କରି ପୃଷ୍ଠାଟି ପୁଣି ଲୋଡ୍ କରନ୍ତୁ","ପୁଣି ଲୋଡ୍ କରନ୍ତୁ","ପ୍ରୋଜେକ୍ଟ ଲୋଡ୍ ହେଉଛି…","ଦୟାକରି ଟିକେ ଅପେକ୍ଷା କରନ୍ତୁ","ସମ୍ପାଦକ ପ୍ରସ୍ତୁତ ହୋଇପାରିଲା ନାହିଁ। ଇଣ୍ଟରନେଟ୍ ଧୀର ଥିଲେ ପୃଷ୍ଠାଟି ପୁଣି ଲୋଡ୍ କରନ୍ତୁ।","ପ୍ରୋଜେକ୍ଟ ଲୋଡ୍ କରିହେଲା ନାହିଁ:","ପ୍ରୋଜେକ୍ଟ ଫାଇଲ୍ ଖାଲି ଥିଲା","ପାଠ ପୃଷ୍ଠାରୁ ପ୍ରୋଜେକ୍ଟ ମିଳିଲା ନାହିଁ। ପାଠ ପୃଷ୍ଠାରେ ବଟନ୍ ପୁଣିଥରେ କ୍ଲିକ୍ କରନ୍ତୁ।"],"pl":["Przygotowujemy edytor AI do programowania blokami","Pierwsze otwarcie trwa kilka sekund","Przy wolnym internecie może to potrwać trochę dłużej","Edytor się nie załadował","Sprawdź połączenie z internetem i załaduj stronę ponownie","Załaduj ponownie","Ładowanie projektu…","Poczekaj chwilę","Nie udało się przygotować edytora. Jeśli internet jest wolny, załaduj stronę ponownie.","Nie udało się załadować projektu:","Otrzymany plik projektu jest pusty","Nie udało się odebrać projektu ze strony lekcji. Kliknij ponownie przycisk na stronie lekcji."],"pt-br":["Preparando o editor de blocos com IA","A primeira visita leva alguns segundos","Com uma conexão lenta, pode demorar um pouco mais","Não foi possível carregar o editor","Verifique sua conexão e recarregue a página","Recarregar","Carregando o projeto…","Aguarde um momento","Não foi possível preparar o editor. Se sua conexão estiver lenta, recarregue a página.","Não foi possível carregar o projeto:","O arquivo do projeto estava vazio","Não foi possível receber o projeto da página da aula. Clique de novo no botão dessa página."],"pt":["A preparar o editor de blocos com IA","A primeira visita demora alguns segundos","Com uma ligação lenta, pode demorar um pouco mais","Não foi possível carregar o editor","Verifique a sua ligação e recarregue a página","Recarregar","A carregar o projecto…","Aguarde um momento","Não foi possível preparar o editor. Se a sua ligação estiver lenta, recarregue a página.","Não foi possível carregar o projecto:","O arquivo do projecto estava vazio","Não foi possível receber o projecto da página da lição. Clique novamente no botão dessa página."],"qu":["IA champa editor qallarichkan","Ñawpaq kutipiqa pisi segundota suyay","Internet allillamanta puriptinqa, aswan suyay","Editorqa manan qipiyta atirqanchu","Internetniykita qaway, hinaspa paqinata musuqyachiy","Musuqyachiy","Llamkay qallarichkan…","Ama hina kaspalla, huk ratu suyay","Editorqa manan qallariyta atirqanchu. Internet allillamanta puriptinqa, paqinata musuqyachiy.","Llamkayqa manan qipiyta atirqanchu:","Llamkay qillqasqaqa mana imayuq karqan","Yachay paqinamanta llamkayqa manan qipiyta atirqanchu. Yachay paqinapi butunta yapamanta klikyay."],"rap":["E haka titika a te editor AI","Ka tiaki e rua o e toru segundos","Ana kora iti te internet, ka tiaki.","Kai tano mo haī te editor","Ka uʾi riva riva te internet, e ka haī haka ʾou te pagina.","Ka haī haka ʾou","E haī a te aŋa…","E riva ro mo tiaki","Kai tano mo haka titika te editor. Ana kora iti te internet, ka haī haka ʾou te pagina.","Kai tano mo haī te aŋa:","Ina etahi meʾe i rote parau hapaʾo o te aŋa","Kai tano mo maʾu mai te aŋa mai te pagina o te haka hapi. Ka ŋatu hai clic haka ʾou te pito pito i te pagina o te haka hapi."],"ro":["Se pregătește editorul de blocuri cu IA","Prima vizită durează câteva secunde","Cu o conexiune lentă poate dura puțin mai mult","Editorul nu s-a încărcat","Verifică-ți conexiunea și reîncarcă pagina","Reîncarcă","Se încarcă proiectul…","Te rugăm să aștepți puțin","Editorul nu a putut fi pregătit. Dacă ai o conexiune lentă, reîncarcă pagina.","Proiectul nu a putut fi încărcat:","Fișierul proiectului era gol","Proiectul nu a putut fi primit de pe pagina lecției. Apasă din nou butonul de pe pagina lecției."],"ru":["Готовим ИИ-редактор блочного программирования","Первый запуск занимает несколько секунд","При медленном интернете это может занять чуть дольше","Редактор не загрузился","Проверь подключение к интернету и перезагрузи страницу","Перезагрузить","Загрузка проекта…","Подожди немного","Не удалось подготовить редактор. Если интернет медленный, перезагрузи страницу.","Не удалось загрузить проект:","Полученный файл проекта пуст","Не удалось получить проект со страницы урока. Нажми кнопку на странице урока ещё раз."],"sk":["Pripravujem AI editor na blokové programovanie","Prvé otvorenie trvá niekoľko sekúnd","Pri pomalom internete to môže trvať trochu dlhšie","Editor sa nenačítal","Skontroluj pripojenie k internetu a znova načítaj stránku","Znova načítaj","Otváram projekt…","Chvíľu počkaj","Editor sa nepodarilo pripraviť. Ak máš pomalý internet, znova načítaj stránku.","Projekt sa nepodarilo otvoriť:","Prijatý súbor projektu je prázdny","Projekt sa nepodarilo prijať zo stránky lekcie. Klikni znova na tlačidlo na stránke lekcie."],"sl":["Pripravljam AI urejevalnik za bločno programiranje","Prvo odpiranje traja nekaj sekund","Pri počasni povezavi lahko traja malo dlje","Urejevalnik se ni naložil","Preveri internetno povezavo in ponovno naloži stran","Ponovno naloži","Nalagam projekt…","Počakaj trenutek","Urejevalnika ni bilo mogoče pripraviti. Če je povezava počasna, ponovno naloži stran.","Projekta ni bilo mogoče naložiti:","Prejeta datoteka projekta je prazna","Projekta ni bilo mogoče prejeti s strani lekcije. Na strani lekcije ponovno klikni gumb."],"sr":["Припремамо едитор за блоковско програмирање са АИ","Прво отварање траје неколико секунди","Ако је интернет спор, ово може потрајати мало дуже","Едитор се није учитао","Провери интернет везу и поново учитај страницу","Поново учитај","Учитавам пројекат…","Сачекај мало","Едитор није успео да се припреми. Ако је интернет спор, поново учитај страницу.","Пројекат није могао да се учита:","Примљена датотека пројекта је празна","Пројекат није стигао са странице лекције. Поново кликни на дугме на страници лекције."],"sv":["Förbereder AI-redigeraren för blockprogrammering","Första gången tar det några sekunder","Med långsamt internet kan det ta lite längre tid","Redigeraren kunde inte laddas","Kontrollera internetanslutningen och uppdatera sidan","Uppdatera","Laddar projekt …","Vänta ett ögonblick","Redigeraren kunde inte förberedas. Uppdatera sidan om internet är långsamt.","Projektet kunde inte laddas:","Projektfilen var tom","Projektet kunde inte tas emot från lektionssidan. Klicka på knappen på lektionssidan igen."],"sw":["Tunaandaa kihariri cha AI cha msimbo wa bloku","Mara ya kwanza huchukua sekunde chache","Intaneti ikiwa polepole, huenda ikachukua muda zaidi kidogo","Imeshindwa kupakia kihariri","Angalia muunganisho wa intaneti kisha upakie ukurasa tena","Pakia tena","Inapakia mradi…","Tafadhali subiri kidogo","Kihariri hakikuweza kuwa tayari. Intaneti ikiwa polepole, pakia ukurasa tena.","Imeshindwa kupakia mradi:","Faili ya mradi iliyopokelewa ilikuwa tupu","Imeshindwa kupokea mradi kutoka ukurasa wa somo. Bonyeza kitufe kwenye ukurasa wa somo tena."],"th":["กำลังเตรียมตัวแก้ไขโค้ดแบบบล็อก AI","การเปิดครั้งแรกใช้เวลาไม่กี่วินาที","ถ้าอินเทอร์เน็ตช้า อาจใช้เวลานานขึ้นอีกนิด","โหลดตัวแก้ไขโค้ดไม่สำเร็จ","ตรวจสอบการเชื่อมต่ออินเทอร์เน็ต แล้วโหลดหน้านี้ใหม่","โหลดใหม่","กำลังโหลดโครงงาน…","กรุณารอสักครู่","เตรียมตัวแก้ไขโค้ดไม่สำเร็จ ถ้าอินเทอร์เน็ตช้า ให้โหลดหน้านี้ใหม่","โหลดโครงงานไม่สำเร็จ:","ไฟล์โครงงานว่างเปล่า","ไม่ได้รับโครงงานจากหน้าบทเรียน ลองคลิกปุ่มในหน้าบทเรียนอีกครั้ง"],"tn":["Re baakanya motseleganyi wa AI wa diboloko","Lekgetlo la ntlha le tsaya metsotswana e se kae","Fa inthanete e le bonya, go ka tsaya nako e telelenyana","Go paletswe go tsenya motseleganyi","Sekaseka kgokagano ya inthanete mme o ntšhwafatse tsebe","Ntšhwafatsa","Go tsenya porojeke…","Tsweetswee leta motsotswana","Go paletswe go baakanya motseleganyi. Fa inthanete e le bonya, ntšhwafatsa tsebe.","E reteletswe ke go tsenya porojeke:","Faele ya porojeke e ne e se na sepe","Go paletswe go amogela porojeke go tswa mo tsebeng ya thuto. Tobetsa konopo mo tsebeng ya thuto gape."],"tr":["Yapay zeka blok kodlama editörü hazırlanıyor","İlk açılış birkaç saniye sürer","İnternet yavaşsa bu biraz daha uzun sürebilir","Editör yüklenemedi","İnternet bağlantını kontrol et ve sayfayı yeniden yükle","Yeniden yükle","Proje yükleniyor…","Lütfen biraz bekle","Editör hazırlanamadı. İnternetin yavaşsa sayfayı yeniden yükle.","Proje yüklenemedi:","Gelen proje dosyası boştu","Proje ders sayfasından alınamadı. Ders sayfasındaki düğmeye tekrar tıkla."],"uk":["Готуємо редактор блокового програмування зі ШІ","Перший запуск триває кілька секунд","Якщо інтернет повільний, це може тривати трохи довше","Редактор не завантажився","Перевір підключення до інтернету й перезавантаж сторінку","Перезавантажити","Завантаження проєкту…","Зачекай хвилинку","Не вдалося підготувати редактор. Якщо інтернет повільний, перезавантаж сторінку.","Не вдалося завантажити проєкт:","Отриманий файл проєкту порожній","Не вдалося отримати проєкт зі сторінки уроку. Натисни кнопку на сторінці уроку ще раз."],"uz":["Sun'iy intellekt blok muharriri tayyorlanmoqda","Birinchi ochilishda bir necha soniya ketadi","Internet sekin bo'lsa, biroz ko'proq vaqt ketishi mumkin","Muharrir yuklanmadi","Internet aloqasini tekshirib, sahifani yangilang","Yangilash","Loyiha yuklanmoqda…","Iltimos, biroz kuting","Muharrirni tayyorlab bo'lmadi. Internet sekin bo'lsa, sahifani yangilang.","Loyihani yuklab bo'lmadi:","Loyiha fayli bo'sh edi","Dars sahifasidan loyihani qabul qilib bo'lmadi. Dars sahifasidagi tugmani yana bir bor bosing."],"vi":["Đang chuẩn bị trình biên tập lập trình khối AI","Lần đầu mở sẽ mất vài giây","Nếu mạng chậm, có thể sẽ lâu hơn một chút","Không tải được trình biên tập","Hãy kiểm tra kết nối mạng và tải lại trang","Tải lại","Đang tải dự án…","Vui lòng chờ một chút","Không thể chuẩn bị trình biên tập. Nếu mạng chậm, hãy tải lại trang.","Không thể tải dự án:","File dự án bị trống","Không nhận được dự án từ trang bài học. Hãy nhấn lại nút trên trang bài học."],"xh":["Silungisa i-editha ye-AI yekhowudi yeebhloko","Ukuvula kokuqala kuthatha imizuzwana embalwa","Ukuba i-intanethi icotha, kungathatha ixesha elide kancinci","Ayikwazanga ukulaysha i-editha","Jonga uqhagamshelwano lwe-intanethi uze uhlaziye iphepha","Hlaziya","Ukulaysha iprojekthi…","Nceda ulinde umzuzwana","Ayikwazanga ukulungisa i-editha. Ukuba i-intanethi icotha, hlaziya iphepha.","Asikwazanga ukulaysha iprojekthi:","Ifayile yeprojekthi efunyenweyo ibingenanto","Asikwazanga ukufumana iprojekthi kwiphepha lesifundo. Cofa iqhosha kwiphepha lesifundo kwakhona."],"zh-cn":["正在准备 AI 积木编程编辑器","第一次打开需要几秒钟","网络较慢时，可能需要多等一会儿","编辑器载入失败","请检查网络连接，然后重新载入页面","重新载入","正在载入作品……","请稍等片刻","编辑器没能准备好。如果网速较慢，请重新载入页面。","无法载入作品：","作品文件是空的","没能从课程页面收到作品。请在课程页面上再点一次按钮。"],"zh-tw":["正在準備 AI 積木程式編輯器","第一次開啟需要幾秒鐘","網路較慢時，可能需要多等一下","編輯器載入失敗","請檢查網路連線，然後重新載入頁面","重新載入","正在載入專案…","請稍等一下","編輯器無法準備就緒。如果網路較慢，請重新載入頁面。","無法載入專案：","專案檔案是空的","無法從課程頁面接收專案。請在課程頁面上再點擊一次按鈕。"],"zu":["Silungisa umhleli we-AI wokukhoda ngamabhulokisi","Ukuvula kokuqala kuthatha imizuzwana embalwa","Uma i-inthanethi ihamba kancane, kungathatha isikhathi eside","Akukwazekanga ukuloda umhleli","Hlola uxhumano lwakho lwe-inthanethi bese uvuselela ikhasi","Vuselela","Isaloda iprojekthi…","Sicela ulinde umzuzwana","Akukwazekanga ukulungisa umhleli. Uma i-inthanethi ihamba kancane, vuselela ikhasi.","Akukwazanga ukuloda iprojekthi:","Ifayela leprojekthi elitholiwe belingenalutho","Akukwazekanga ukuthola iprojekthi ekhasini lesifundo. Chofoza inkinobho ekhasini lesifundo futhi."]}};
+          var M = SPLASH.m || {};
+          var NAMES = SPLASH.keys || [];
+          var q = new URLSearchParams(location.search);
+          var has = function (k) { return !!k && Object.prototype.hasOwnProperty.call(M, k); };
+          var browser = String(navigator.userLanguage || navigator.language || '').toLowerCase();
+          var loc = has(browser) ? browser : (has(browser.split('-')[0]) ? browser.split('-')[0] : 'en');
+          var asked = String(q.get('locale') || q.get('lang') || '').toLowerCase();
+          if (has(asked)) loc = asked;
+          var EN = {
+            preparing: 'Getting the AI block-coding editor ready',
+            firstVisit: 'The first visit takes a few seconds',
+            slow: 'This can take a little longer on a slow connection',
+            failed: 'The editor did not load',
+            checkConnection: 'Check your connection and reload the page',
+            reload: 'Reload',
+            projectLoading: 'Loading the project…',
+            pleaseWait: 'Please wait a moment',
+            editorNotReady: 'The editor couldn\'t get ready. If your connection is slow, reload the page.',
+            projectFailed: 'Couldn\'t load the project:',
+            emptyFile: 'The project file was empty',
+            noProjectFromLesson: 'Couldn\'t receive the project from the lesson page. Click the button on the lesson page again.'
+          };
+          var row = has(loc) ? M[loc] : (has('en') ? M.en : null);
+          var TX = {};
+          for (var k in EN) if (Object.prototype.hasOwnProperty.call(EN, k)) TX[k] = EN[k];
+          if (row) for (var i = 0; i < NAMES.length; i++) if (row[i]) TX[NAMES[i]] = row[i];
+          var dir = (SPLASH.rtl || []).indexOf(loc) !== -1 ? 'rtl' : 'ltr';
+          // 아래 «작품을 불러오는 중» 안내(Project URL Loader)도 같은 말·같은 언어를 쓴다
+          window.__brixelText = function (name) { return TX[name] || EN[name] || ''; };
+          window.__brixelTextLang = {lang: loc, dir: dir};
+
+          var el = document.getElementById('brixel-splash');
+          if (!el) return;
+          var otherPage = /(player|standalone|blocks-only|compatibility-testing)\.html$/.test(location.pathname);
+          if (otherPage || q.get('project_url') || q.get('project_from') || q.get('embed') === 'true') {
+            el.parentNode.removeChild(el);
+            return;
+          }
+          el.setAttribute('lang', loc);
+          el.setAttribute('dir', dir);
+          var msg = document.getElementById('brixel-splash-msg');
+          var sub = document.getElementById('brixel-splash-sub');
+          var reload = document.getElementById('brixel-splash-reload');
+          msg.textContent = TX.preparing;
+          sub.textContent = TX.firstVisit;
+          reload.textContent = TX.reload;
+          var done = false;
+          var slow = setTimeout(function () {
+            sub.textContent = TX.slow;
+          }, 8000);
+          var fail = setTimeout(function () {
+            if (done) return;
+            msg.textContent = TX.failed;
+            sub.textContent = TX.checkConnection;
+            reload.hidden = false;
+          }, 45000);
+          reload.addEventListener('click', function () { location.reload(); });
+          window.addEventListener('brixel:gui-ready', function () {
+            if (done) return;
+            done = true;
+            clearTimeout(slow);
+            clearTimeout(fail);
+            el.style.opacity = '0';
+            setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 400);
+          });
+        })();</script><div id="seo-content" style="position: absolute; top: -9999px; left: -9999px; width: 1px; height: 1px; overflow: hidden;"><h1>인공지능 브릭셀 | AI 브릭셀 | 로봇 브릭셀 (Artificial Intelligence Brixel)</h1><p>이 웹사이트는 <strong>인공지능 브릭셀(AI Brixel)</strong>, <strong>AI브릭셀</strong>, <strong>로봇 브릭셀(Robot Brixel)</strong>를 위한 무료 <strong>블록코딩(Block Coding)</strong> 교육 플랫폼입니다. Artificial Intelligence Brixel과 Robot Brixel 기반의 최고의 AI 교육 도구입니다.</p><h2>인공지능 브릭셀 (AI Brixel) 주요 기능</h2><ul><li><strong>AI 브릭셀 (Artificial Intelligence Brixel):</strong> 웹캠을 이용한 <strong>핸드트래킹(Hand Tracking)</strong>, 페이스 트래킹, 포즈 감지 기능을 제공하는 인공지능 브릭셀 플랫폼입니다.</li><li><strong>로봇 브릭셀 (Robot Brixel):</strong> 아두이노(Arduino), ESP32, 마이크로비트(micro:bit), 라즈베리파이 피코 등 다양한 하드웨어를 제어하는 <strong>피지컬 컴퓨팅(Physical Computing)</strong>이 가능한 로봇 브릭셀입니다.</li><li><strong>강화학습 (Reinforcement Learning):</strong> 블록 코딩으로 쉽게 배우는 머신러닝과 강화학습 모델 훈련을 지원하는 AI 브릭셀입니다.</li><li><strong>실시간 AI 교육:</strong> MediaPipe 기반 실시간 영상처리와 인공지능 학습이 가능합니다.</li></ul><h2>AI브릭셀과 로봇 브릭셀의 장점</h2><p>우리의 <strong>인공지능 브릭셀</strong>와 <strong>로봇 브릭셀</strong> 플랫폼은 설치 없이 웹에서 바로 실행되는 혁신적인 코딩 교육 도구입니다. <strong>AI Brixel</strong>와 <strong>Robot Brixel</strong>를 통해 누구나 쉽게 인공지능과 로봇 프로그래밍을 배울 수 있습니다.</p><h3>지원되는 하드웨어 (로봇 브릭셀)</h3><p>로봇 브릭셀(Robot Brixel)는 아두이노(Arduino Uno, Nano, Mega), ESP32, ESP8266, 마이크로비트(micro:bit), 라즈베리파이 피코(Raspberry Pi Pico) 등 다양한 하드웨어를 지원합니다.</p><h3>AI 교육 기능 (인공지능 브릭셀)</h3><p>인공지능 브릭셀(AI Brixel)는 핸드트래킹, 얼굴인식, 포즈추정, 객체감지 등 최신 AI 기술을 블록코딩으로 쉽게 학습할 수 있습니다. Artificial Intelligence Brixel의 강력한 기능을 체험해보세요.</p><h3>블록코딩 기반 교육</h3><p>브릭셀(Brixel) 기반의 직관적인 블록코딩 인터페이스로 누구나 쉽게 AI 프로그래밍을 시작할 수 있습니다. AI브릭셀과 로봇 브릭셀로 코딩 교육의 새로운 지평을 열어보세요.</p><h2>무료 AI 교육 플랫폼</h2><p>완전 무료로 제공되는 인공지능 브릭셀과 로봇 브릭셀 플랫폼으로 AI 교육과 로봇 교육을 시작하세요. 별도 설치나 가입 없이 바로 사용 가능합니다.</p><h2>AI Brixel, Robot Brixel, Artificial Intelligence Brixel</h2><p>Our AI Brixel and Robot Brixel platform provides comprehensive Artificial Intelligence education through block coding. Experience the best AI Brixel and Robot Brixel tools for coding education.</p><p><strong>지금 바로 시작하세요:</strong> 인공지능 브릭셀, AI브릭셀, 로봇 브릭셀로 미래의 AI 개발자가 되어보세요!</p></div><script>(function() {
+          var params = new URLSearchParams(window.location.search);
+          var projectUrl = params.get('project_url');
+          var format = params.get('format');
+          // 🆕 2026-10-01 — ?project_from=opener : 이 탭을 연 페이지(window.opener)가 sb3 바이트를 postMessage 로 건넨다.
+          //    project_url 은 «에디터가 받아 갈 수 있는 인터넷 주소»(https + CORS)여야 해서, 로컬 미리보기나
+          //    PHP 없는 서버의 수업 페이지는 «브릭셀AI에서 열기»를 못 했다. 이 길은 파일이 어디 있든 된다 —
+          //    수업 페이지가 자기 파일을 읽어 건네기 때문이다.
+          //    약속: 에디터 → opener {type:'brixel:ready'} (0.5초마다, 받을 때까지)
+          //          opener → 에디터 {type:'brixel:project', sb3: ArrayBuffer} — 이 탭을 연 창이 보낸 것만 받는다.
+          //    수업 페이지 쪽 본보기 = 디싹 홈페이지 01_interactive_art/open/opener.js
+          var fromOpener = !projectUrl && params.get('project_from') === 'opener' && !!window.opener;
+          if (!projectUrl && !fromOpener) return;
+          var openerProject = fromOpener ? receiveFromOpener() : null;
+          // VM 준비 전에 실패가 먼저 와도 «처리 안 된 거부» 경고가 뜨지 않게(실제 처리는 beginLoad 의 catch 가 한다)
+          if (openerProject) openerProject.catch(function () {});
+          // 안내 문구 = 위 로딩 화면 스크립트가 고른 언어의 번역 사전 gui.splash.*(없으면 영어)
+          var T = function (name, en) { return (window.__brixelText && window.__brixelText(name)) || en; };
+
+          function receiveFromOpener() {
+            return new Promise(function (resolve, reject) {
+              var opener = window.opener;
+              var done = false;
+              var ping = null;
+              var limit = null;
+              var finish = function (fn, value) {
+                if (done) return;
+                done = true;
+                window.removeEventListener('message', onMessage);
+                clearInterval(ping);
+                clearTimeout(limit);
+                fn(value);
+              };
+              var onMessage = function (e) {
+                if (e.source !== opener || !e.data || e.data.type !== 'brixel:project') return;
+                if (e.data.sb3 instanceof ArrayBuffer && e.data.sb3.byteLength) finish(resolve, e.data.sb3);
+                else finish(reject, new Error(T('emptyFile', 'The project file was empty')));
+              };
+              var sayReady = function () {
+                try { opener.postMessage({type: 'brixel:ready'}, '*'); } catch (err) { /* 닫혔으면 limit 가 끝낸다 */ }
+              };
+              window.addEventListener('message', onMessage);
+              ping = setInterval(sayReady, 500);
+              sayReady();
+              limit = setTimeout(function () {
+                finish(reject, new Error(T('noProjectFromLesson',
+                  'Couldn\'t receive the project from the lesson page. Click the button on the lesson page again.')));
+              }, 30000);
+            });
+          }
+
+          console.log('[Brixel URL Loader] Waiting for VM...');
+
+          // ── 로딩 안내 ──
+          // 에디터 번들(14MB) 로드 → VM 준비 폴링 → sb3 내려받기까지 수 초가 걸린다.
+          // 그동안 빈 프로젝트가 보이므로 "코드가 없다"고 오해하기 쉽다(실사용 신고 2026-08-12).
+          // 진행 중임을 화면에 알리고, 끝나면(성공/실패 모두) 반드시 걷어낸다.
+          var ov = document.createElement('div');
+          ov.id = 'brixel-load-overlay';
+          ov.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(255,255,255,.94);' +
+            'display:flex;flex-direction:column;align-items:center;justify-content:center;' +
+            'font-family:system-ui,-apple-system,"Malgun Gothic",sans-serif;color:#333';
+          var langInfo = window.__brixelTextLang || {lang: 'en', dir: 'ltr'};
+          ov.setAttribute('lang', langInfo.lang);
+          ov.setAttribute('dir', langInfo.dir);
+          ov.innerHTML =
+            '<div style="width:46px;height:46px;border:4px solid #ffe0bd;border-top-color:#ff8c1a;' +
+            'border-radius:50%;animation:brixelSpin .9s linear infinite"></div>' +
+            '<div id="brixel-load-title" style="margin-top:18px;font-size:17px;font-weight:700;text-align:center;padding:0 16px"></div>' +
+            '<div id="brixel-load-sub" style="margin-top:6px;font-size:13px;color:#777;text-align:center;padding:0 16px"></div>' +
+            '<style>@keyframes brixelSpin{to{transform:rotate(360deg)}}</style>';
+          // 번역 문구는 HTML 이 아니라 글자로 넣는다(사전 값이 태그로 해석되지 않게)
+          ov.querySelector('#brixel-load-title').textContent = T('projectLoading', 'Loading the project…');
+          ov.querySelector('#brixel-load-sub').textContent = T('pleaseWait', 'Please wait a moment');
+          var attachOverlay = function () {
+            if (document.body && !document.getElementById('brixel-load-overlay')) document.body.appendChild(ov);
+          };
+          if (document.body) attachOverlay();
+          else document.addEventListener('DOMContentLoaded', attachOverlay);
+
+          var hideOverlay = function (msg) {
+            var el = document.getElementById('brixel-load-overlay');
+            if (!el) return;
+            if (msg) {
+              // 실패 시에는 이유를 보여주고 잠시 뒤 닫는다(원인 모를 빈 화면을 남기지 않는다).
+              var sub = document.getElementById('brixel-load-sub');
+              if (sub) { sub.textContent = msg; sub.style.color = '#c62828'; }
+              setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 5000);
+            } else if (el.parentNode) {
+              el.parentNode.removeChild(el);
+            }
+          };
+
+          // VM이 준비될 때까지 기다린다.
+          // 🔴 2026-09-15 — 예전엔 500ms×60 = «30초» 폴링뿐이었다. gui.js 가 14.7MB 라
+          //    학교 회선(4~5Mbps)에서는 내려받는 데만 30초가 걸려, 예산을 넘기면 로더가
+          //    포기하고 «기본 빈 프로젝트»만 남았다 — 「콜드=빈 화면, 웜=정상」의 두 번째 원인.
+          //    이제 ① gui.jsx 가 VM 준비 즉시 __brixelOnVmReady 로 «알려 주고»
+          //         ② 폴링은 보조 수단으로 남기되 예산을 120초로 늘렸다.
+          var started = false;
+          var attempts = 0;
+          var maxAttempts = 240;
+          var timer = null;
+          window.__brixelOnVmReady = function (readyVm) { begin(readyVm); };
+          var begin = function (vm) {
+            if (started || !vm) return;
+            started = true;
+            if (timer) clearInterval(timer);
+            beginLoad(vm);
+          };
+          timer = setInterval(function() {
+            attempts++;
+            // scratch-gui가 VM을 window에 노출하지 않으므로 Redux store에서 접근
+            var vm = null;
+            try {
+              var appEl = document.querySelector('[class*="app"]');
+              if (appEl && appEl._reactRootContainer) {
+                // React 내부에서 VM 접근 시도
+              }
+              // scratch-gui는 VM을 전역에 노출하지 않지만,
+              // scratch-vm의 Runtime이 로드되면 document에 이벤트 발생
+              // 대안: gui.js 번들 내의 store에서 직접 접근
+              if (window.__vm) {
+                vm = window.__vm;
+              }
+            } catch(e) {}
+
+            if (vm) { begin(vm); return; }
+            if (attempts < maxAttempts) return;
+            clearInterval(timer);
+            if (started) return;
+            console.error('[Brixel URL Loader] VM not found after', maxAttempts, 'attempts');
+            hideOverlay(T('editorNotReady', 'The editor couldn\'t get ready. If your connection is slow, reload the page.'));
+          }, 500);
+
+          // 받은 뒤에는 주소에서 project_from 을 걷어 낸다 — 새로고침하면 (닫혔을 수도 있는) 수업 페이지를
+          // 30초 기다리며 화면을 가리는 대신 평소 에디터로 열리게.
+          function dropOpenerParam() {
+            if (!fromOpener) return;
+            try {
+              var u = new URL(window.location.href);
+              u.searchParams.delete('project_from');
+              window.history.replaceState(null, document.title, u.pathname + u.search + u.hash);
+            } catch (e) { /* noop */ }
+          }
+
+          function fetchProject() {
+            return fetch(projectUrl)
+              .then(function(res) {
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                return format === 'base64' ? res.text() : res.arrayBuffer();
+              })
+              .then(function(data) {
+                if (format === 'base64') {
+                  var binary = atob(data.trim());
+                  var bytes = new Uint8Array(binary.length);
+                  for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+                  return bytes.buffer;
+                }
+                return data;
+              });
+          }
+
+          function beginLoad(vm) {
+            console.log('[Brixel URL Loader] VM found, ' + (fromOpener ? 'receiving project from opener...' : 'fetching project...'));
+            (fromOpener ? openerProject : fetchProject())
+              .then(function(arrayBuffer) {
+                console.log('[Brixel URL Loader] Loading sb3, size:', arrayBuffer.byteLength);
+                // 확장 블록까지 정상 로드되도록 __loadProjectFromData 사용
+                if (window.__loadProjectFromData) {
+                  return window.__loadProjectFromData(arrayBuffer);
+                }
+                return vm.loadProject(arrayBuffer);
+              })
+              .then(function() {
+                console.log('[Brixel URL Loader] Project loaded successfully!');
+                dropOpenerParam();
+                hideOverlay();
+              })
+              .catch(function(err) {
+                console.error('[Brixel URL Loader] Error:', err);
+                dropOpenerParam();
+                hideOverlay(T('projectFailed', 'Couldn\'t load the project:') + ' ' + (err && err.message ? err.message : err));
+              });
+          }
+        })();</script><script>(function () {
+          function detectLanguage() {
+            var lang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
+            if (lang.startsWith('ko')) return 'ko';
+            if (lang.startsWith('ja')) return 'ja';
+            if (lang.startsWith('zh')) return 'zh';
+            if (lang.startsWith('ar')) return 'ar';
+            return 'en';
+          }
+
+          /* 팝업 제거됨 */
+        })();</script><script async src="https://www.googletagmanager.com/gtag/js?id=G-CZEHXDFT7B"></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-CZEHXDFT7B', { 'send_page_view': true, 'anonymize_ip': true });</script><script>(function () {
+          function cleanTrackingParams() {
+            try {
+              var url = new URL(window.location.href);
+              var p = url.searchParams;
+              var junk = ['_gl', '_ga', 'utm_source', 'utm_medium', 'utm_campaign',
+                          'utm_term', 'utm_content', 'gclid', 'fbclid', 'igshid'];
+              var removed = false;
+              junk.forEach(function (k) { if (p.has(k)) { p.delete(k); removed = true; } });
+              if (removed) {
+                var clean = url.pathname + (p.toString() ? '?' + p.toString() : '') + url.hash;
+                window.history.replaceState(null, document.title, clean);
+              }
+            } catch (e) { /* noop */ }
+          }
+          // GA(gtag)가 _gl 로 client ID 를 복원한 뒤 정리 → cross-domain 추적 유지하며 주소만 깨끗하게.
+          if (document.readyState === 'complete') { cleanTrackingParams(); }
+          else { window.addEventListener('load', cleanTrackingParams); }
+        })();</script></body></html>
