@@ -1,0 +1,1349 @@
+/* =================================================================== */
+/* 공통 및 기본 스타일 (Common & Base Styles) */
+/* =================================================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    min-height: 100vh;
+}
+
+#page-index .container {
+    max-width: 1140px;
+    /* 콘텐츠의 최대 너비를 1140px로 제한 */
+    margin: 0 auto;
+    /* 좌우 마진을 자동으로 설정해 중앙 정렬 */
+    padding: 0 20px;
+    /* 화면이 줄어들 때를 대비한 좌우 여백 */
+}
+
+/* =================================================================== */
+/* 1. index.html (메인 랜딩 페이지) 스타일 */
+/* =================================================================== */
+body#page-index {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+#page-index header {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+#page-index .container {
+    max-width: 1140px;
+    /* 콘텐츠의 최대 너비를 1140px로 제한 */
+    margin: 0 auto;
+    /* 좌우 마진을 자동으로 설정해 중앙 정렬 */
+    padding: 0 20px;
+    /* 화면이 줄어들 때를 대비한 좌우 여백 */
+}
+
+#page-index nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+}
+
+#page-index .logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: white;
+    text-decoration: none;
+}
+
+#page-index .nav-links {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+}
+
+#page-index .nav-links a {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+#page-index .nav-links a:hover {
+    color: #ffd700;
+}
+
+#page-index .hero {
+    margin-top: 80px;
+    padding: 100px 0;
+    text-align: center;
+    color: white;
+}
+
+#page-index .hero h1 {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    animation: fadeInUp 1s ease;
+}
+
+#page-index .hero .subtitle {
+    font-size: 1.3rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+    animation: fadeInUp 1s ease 0.2s both;
+}
+
+#page-index .hero-description {
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto 3rem;
+    opacity: 0.8;
+    animation: fadeInUp 1s ease 0.4s both;
+}
+
+#page-index .cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    animation: fadeInUp 1s ease 0.6s both;
+}
+
+#page-index .btn {
+    padding: 15px 30px;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#page-index .btn-primary {
+    background: linear-gradient(45deg, #ff6b6b, #feca57);
+    color: white;
+    box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+}
+
+#page-index .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(255, 107, 107, 0.4);
+}
+
+#page-index .btn-secondary {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+#page-index .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-3px);
+}
+
+#page-index .features {
+    padding: 100px 0;
+    background: rgba(255, 255, 255, 0.95);
+    color: #333;
+}
+
+#page-index .features h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+    color: #2c3e50;
+}
+
+/* ===== 수정된 부분 시작 ===== */
+#page-index .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    /* 3개씩 표시 */
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+#page-index .tech-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    /* 2개씩 표시 */
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+/* ===== 수정된 부분 끝 ===== */
+
+#page-index .feature-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-align: center;
+}
+
+#page-index .feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+}
+
+#page-index .feature-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+#page-index .feature-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: #2c3e50;
+}
+
+#page-index .tech-stack {
+    padding: 80px 0;
+    background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+    color: white;
+    text-align: center;
+}
+
+#page-index .tech-stack h2 {
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+}
+
+#page-index .tech-item {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2rem;
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s ease;
+}
+
+#page-index .tech-item:hover {
+    transform: scale(1.05);
+}
+
+#page-index .tech-item h3 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+}
+
+#page-index .demo {
+    padding: 100px 0;
+    background: rgba(255, 255, 255, 0.95);
+    text-align: center;
+}
+
+#page-index .demo h2 {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    color: #2c3e50;
+}
+
+#page-index .demo-video {
+    max-width: 800px;
+    margin: 0 auto;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+}
+
+#page-index .demo-placeholder {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    padding: 100px;
+    font-size: 1.5rem;
+}
+
+#page-index footer {
+    background: #2c3e50;
+    color: white;
+    padding: 50px 0;
+    text-align: center;
+}
+
+#page-index .footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+#page-index .footer-section h3 {
+    margin-bottom: 1rem;
+    color: #ffd700;
+}
+
+#page-index .footer-section a {
+    color: #bdc3c7;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+#page-index .footer-section a:hover {
+    color: #ffd700;
+}
+
+#page-index .scroll-animate {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 0.8s ease;
+}
+
+#page-index .scroll-animate.animated {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@media (max-width: 992px) {
+    #page-index .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+        /* 태블릿: 2개씩 표시 */
+    }
+}
+
+/* Tiny Buttons for Chart Controls */
+.btn-xs {
+    padding: 2px 8px;
+    font-size: 0.75rem;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-xs:hover {
+    background: #f0f0f0;
+}
+
+.btn-xs.active {
+    background: #2196F3;
+    color: white;
+    border-color: #2196F3;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid #ddd;
+    color: #666;
+}
+
+.btn-outline.active {
+    background: #2196F3;
+    color: white;
+    border-color: #2196F3;
+    font-weight: bold;
+}
+
+@media (max-width: 768px) {
+    #page-index .hero h1 {
+        font-size: 2.5rem;
+    }
+
+    #page-index .hero .subtitle {
+        font-size: 1.1rem;
+    }
+
+    #page-index .cta-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #page-index .nav-links {
+        display: none;
+    }
+
+    #page-index .features-grid,
+    #page-index .tech-grid {
+        grid-template-columns: 1fr;
+        /* 모바일: 1개씩 표시 */
+    }
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 1;
+    }
+
+    90% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(-10vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =================================================================== */
+/* 2. information.html (정보 페이지) 스타일 */
+/* =================================================================== */
+body#page-info {
+    background: linear-gradient(135deg, #E8F5E8 0%, #D4F1D4 100%);
+}
+
+#page-info .container {
+    max-width: 900px;
+    margin: 40px auto;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(144, 238, 144, 0.2);
+    overflow: hidden;
+}
+
+#page-info .header {
+    background: linear-gradient(135deg, #90EE90 0%, #98FB98 100%);
+    color: #2F5233;
+    padding: 2rem;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+#page-info .header img {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 1rem;
+}
+
+#page-info .header h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin: 0;
+}
+
+#page-info .header p {
+    font-size: 1.1rem;
+    margin-top: 0.5rem;
+    opacity: 0.8;
+}
+
+#page-info .content {
+    padding: 2rem;
+}
+
+#page-info .developer-info {
+    background: linear-gradient(135deg, #87CEEB 0%, #98D8E8 100%);
+    color: #1B4F72;
+    padding: 1.5rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+}
+
+#page-info .developer-info h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+#page-info .developer-info .info-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.8rem 1.5rem;
+    align-items: center;
+}
+
+#page-info .developer-info .label {
+    font-weight: bold;
+    opacity: 0.9;
+}
+
+#page-info .section {
+    margin-bottom: 2rem;
+}
+
+#page-info .section h2 {
+    color: #6B8E6B;
+    border-bottom: 3px solid #90EE90;
+    padding-bottom: 0.8rem;
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+}
+
+#page-info .section h3 {
+    color: #7BA77B;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+}
+
+#page-info .section p {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+#page-info .philosophy {
+    background: linear-gradient(135deg, #F0FFF0 0%, #E8F5E8 100%);
+    padding: 1.5rem;
+    border-radius: 15px;
+    text-align: center;
+    margin: 2rem 0;
+    border: 2px solid #B8E6B8;
+}
+
+#page-info .philosophy h3 {
+    margin: 0 0 1rem 0;
+    color: #5A7A5A;
+    font-size: 1.3rem;
+}
+
+#page-info .philosophy p {
+    margin: 0;
+    color: #5A7A5A;
+    font-style: italic;
+    font-size: 1.1rem;
+}
+
+#page-info .kakaotalk-card {
+    background: #FEE500;
+    border-radius: 15px;
+    margin: 2rem 0;
+    padding: 1.5rem;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#page-info .kakaotalk-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(254, 229, 0, 0.4);
+}
+
+#page-info .kakaotalk-card a {
+    text-decoration: none;
+    color: #191919;
+    font-weight: bold;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    /* 아이콘과 텍스트를 수직으로 정렬 */
+    gap: 10px;
+}
+
+#page-info .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+#page-info .feature-card {
+    background: linear-gradient(135deg, #B8E6B8 0%, #A8D8A8 100%);
+    color: #2F5233;
+    padding: 1.5rem;
+    border-radius: 10px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#page-info .feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(144, 238, 144, 0.3);
+}
+
+#page-info .feature-card h4 {
+    margin: 0 0 0.8rem 0;
+    font-size: 1.1rem;
+}
+
+#page-info .feature-card p {
+    margin: 0;
+    opacity: 0.9;
+    font-size: 0.95rem;
+}
+
+#page-info .steps {
+    counter-reset: step-counter;
+}
+
+#page-info .step {
+    counter-increment: step-counter;
+    position: relative;
+    padding-left: 4rem;
+    margin-bottom: 2rem;
+}
+
+#page-info .step::before {
+    content: counter(step-counter);
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: #90EE90;
+    color: #2F5233;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+#page-info .step h4 {
+    margin: 0 0 0.8rem 0;
+    color: #6B8E6B;
+    font-size: 1.2rem;
+}
+
+#page-info .step ul {
+    padding-left: 1.2rem;
+}
+
+#page-info .step li,
+#page-info .highlight-box li,
+#page-info .resources li {
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}
+
+#page-info .data-format {
+    background: #F8FFF8;
+    border: 2px solid #90EE90;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+}
+
+#page-info .data-format code {
+    background: #90EE90;
+    color: #2F5233;
+    padding: 0.5rem 0.8rem;
+    border-radius: 5px;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    display: inline-block;
+    margin: 0.3rem 0;
+    font-size: 1rem;
+}
+
+#page-info .highlight-box,
+#page-info .resources {
+    background: linear-gradient(135deg, #F0FFF0 0%, #E8F5E8 100%);
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin: 1rem 0;
+    border-left: 4px solid #90EE90;
+}
+
+#page-info .highlight-box ul,
+#page-info .resources ul {
+    padding-left: 1.2rem;
+}
+
+#page-info strong {
+    color: #6B8E6B;
+}
+
+#page-info ul {
+    padding-left: 1.2rem;
+}
+
+#page-info .resources a {
+    color: #6B8E6B;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+#page-info .resources a:hover {
+    text-decoration: underline;
+}
+
+#page-info .fade-in {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s ease;
+}
+
+#page-info .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+    #page-info .container {
+        margin: 20px;
+        border-radius: 15px;
+    }
+
+    #page-info .content,
+    #page-info .header {
+        padding: 1.5rem;
+    }
+
+    #page-info .header h1 {
+        font-size: 2rem;
+    }
+
+    #page-info .developer-info .info-grid,
+    #page-info .feature-grid {
+        grid-template-columns: 1fr;
+    }
+
+    #page-info .step {
+        padding-left: 3.5rem;
+    }
+
+    #page-info .step::before {
+        width: 2.2rem;
+        height: 2.2rem;
+        font-size: 1rem;
+    }
+}
+
+
+/* =================================================================== */
+/* 3. boewrbirdpro.html (웹앱) 스타일 */
+/* =================================================================== */
+
+body#page-app {
+    background-color: #F0F8F0;
+}
+
+#page-app .container {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+#page-app .main-layout {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 10px;
+    height: calc(100vh - 40px);
+}
+
+#page-app .left-panel {
+    background: transparent;
+    border: none;
+    padding: 0;
+    /* ★사이드바는 넘치면 '잘리는' 게 아니라 '스크롤'되어야 한다 (2026-07-27).
+       예전엔 overflow:visible 이라, 사이드바 내용(약 770px)이 .main-layout 그리드 행
+       (calc(100vh - 40px) = 창 720 일 때 680px)을 넘치면 임베드 모드의
+       body{overflow:hidden} 에 걸려 **아래가 그대로 잘리고 스크롤도 안 됐다.**
+       센서 개수가 늘면(과학실 ON 물리량 행이 시리즈마다 1줄) 더 심해지므로
+       창 높이를 키우는 것만으로는 근본 해결이 안 된다.
+       min-height:0 이 없으면 grid/flex 자식이 콘텐츠 크기 아래로 못 줄어들어
+       overflow-y 가 먹지 않는다(표준 함정). */
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 220px;
+}
+
+/* ★위 overflow-y:auto 를 실제로 동작시키는 짝 규칙.
+   flex 자식은 기본이 flex-shrink:1 이라, 부모에 높이 제한이 생기면 **자식이 쪼그라들어**
+   scrollHeight == clientHeight 가 되고 스크롤 막대가 생기지 않는다(대신 카드 안쪽이 잘림).
+   자식이 제 높이를 유지해야 부모가 넘침을 인지하고 스크롤한다. */
+#page-app .left-panel > * {
+    flex-shrink: 0;
+}
+
+/* Prevent text from breaking character-by-character in narrow panels */
+#page-app .left-panel label,
+#page-app .left-panel span,
+#page-app .left-panel button,
+#page-app .left-panel h3,
+#page-app .left-panel h4 {
+    word-break: keep-all;
+    white-space: nowrap;
+}
+
+#page-app .left-panel .section {
+    overflow: visible;
+}
+
+#page-app .left-card {
+    background: #FFFFFF;
+    border-radius: 10px;
+    border: 1px solid #d32f2f;
+    box-shadow: 0 2px 8px rgba(211, 47, 47, 0.15);
+}
+
+#page-app .logo-card {
+    padding: 8px 12px;
+    text-align: left;
+    flex-shrink: 0;
+}
+
+#page-app .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+}
+
+#page-app .logo img {
+    width: 50px;
+    height: 50px;
+    flex-shrink: 0;
+}
+
+#page-app .logo-title {
+    font-weight: 900;
+    font-size: 1.6rem;
+    line-height: 1.2;
+    color: #333;
+    text-align: left;
+}
+
+#page-app .logo-subtitle {
+    font-size: 0.85rem;
+    opacity: 0.7;
+    color: #666;
+    margin-top: 4px;
+    text-align: left;
+    line-height: 1.3;
+}
+
+#page-app .settings-card {
+    padding: 10px 12px;
+    overflow-y: visible;
+    overflow-x: hidden;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+#page-app .section {
+    margin-bottom: 6px;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    background-color: #FAFAFA;
+}
+
+#page-app .section:last-child {
+    margin-bottom: 0;
+}
+
+#page-app .section-no-border {
+    margin-bottom: 20px;
+}
+
+#page-app .section h3 {
+    margin: -8px -12px 6px -12px;
+    padding: 5px 12px;
+    color: #333;
+    font-size: 0.8rem;
+    border-bottom: 1px solid #EAEAEA;
+    background-color: #F8F8F8;
+    border-radius: 6px 6px 0 0;
+}
+
+#page-app .form-group {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    gap: 6px;
+}
+
+#page-app .form-group label {
+    flex-shrink: 0;
+    width: 100px;
+    font-weight: 500;
+    font-size: 0.8rem;
+    color: #555;
+    margin-bottom: 0;
+}
+
+#page-app select,
+#page-app input {
+    width: 100%;
+    padding: 4px 6px;
+    border: 1px solid #CCC;
+    background-color: #FFF;
+    color: #333;
+    border-radius: 4px;
+    font-size: 0.8rem;
+}
+
+#page-app select:focus,
+#page-app input:focus {
+    outline: none;
+    border-color: #2E8B57;
+}
+
+#page-app .btn {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    width: 100%;
+    padding: 6px;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 0.8rem;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+}
+
+#page-app .btn:active:not(:disabled) {
+    transform: scale(0.98);
+}
+
+#page-app button:disabled {
+    background-color: #E0E0E0;
+    color: #A0A0A0;
+    cursor: not-allowed;
+}
+
+#page-app .button-group {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 4px;
+}
+
+#page-app .button-group .btn {
+    flex: 1;
+}
+
+#page-app .btn-connect {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#page-app .btn-connect:hover:not(:disabled) {
+    background-color: #45a049;
+}
+
+#page-app .btn-disconnect {
+    background-color: #f44336;
+    color: white;
+}
+
+#page-app .btn-disconnect:hover:not(:disabled) {
+    background-color: #d32f2f;
+}
+
+#page-app .btn-start {
+    background-color: #98FB98;
+    color: #2E8B57;
+}
+
+#page-app .btn-start:hover:not(:disabled) {
+    background-color: #90EE90;
+}
+
+#page-app .btn-pause {
+    background-color: #D3D3D3;
+    color: #555;
+}
+
+#page-app .btn-pause:hover:not(:disabled) {
+    background-color: #C0C0C0;
+}
+
+#page-app .btn-stop {
+    background-color: #F08080;
+    color: white;
+}
+
+#page-app .btn-stop:hover:not(:disabled) {
+    background-color: #CD5C5C;
+}
+
+#page-app .btn-info {
+    background-color: #ADD8E6;
+    color: #1E90FF;
+}
+
+#page-app .btn-info:hover {
+    background-color: #87CEEB;
+}
+
+#page-app .sensor-section-header {
+    margin-bottom: 4px;
+}
+
+#page-app .sensor-section-header label {
+    font-weight: 500;
+    color: #555;
+    display: block;
+    margin-bottom: 3px;
+    font-size: 0.75rem;
+}
+
+#page-app .sensor-inputs-container {
+    border: 1px solid #E0E0E0;
+    border-radius: 4px;
+    padding: 4px 8px;
+    background-color: #FAFAFA;
+}
+
+#page-app .sensor-input-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 3px;
+    gap: 5px;
+}
+
+#page-app .sensor-input-group:last-child {
+    margin-bottom: 0;
+}
+
+#page-app .sensor-input-group label {
+    flex-shrink: 0;
+    width: 50px;
+    font-weight: 500;
+    color: #555;
+    font-size: 0.7rem;
+}
+
+#page-app .sensor-input-group input {
+    flex: 1;
+    padding: 3px 6px;
+    border: 1px solid #CCC;
+    border-radius: 4px;
+    font-size: 0.75rem;
+}
+
+#page-app .right-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    height: 100%;
+    min-height: 0;
+}
+
+#page-app .chart-container,
+#page-app .log-section {
+    background: #FFFFFF;
+    border-radius: 6px;
+    padding: 6px 8px;
+    border: 1px solid #d32f2f;
+    box-shadow: 0 2px 8px rgba(211, 47, 47, 0.15);
+}
+
+#page-app .log-section {
+    overflow: hidden;
+}
+
+#page-app .chart-container {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+#page-app .chart-controls {
+    flex-shrink: 0;
+}
+
+/* Canvas wrapper: a definite, shrinkable box so Chart.js (responsive) can resize
+   the canvas BOTH ways with the window. The canvas is positioned absolutely so it
+   never bakes a fixed pixel size into layout — without this the canvas won't shrink
+   when the popup window is made smaller, forcing page scrollbars. */
+#page-app .chart-canvas-wrap {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    min-width: 0;
+}
+#page-app #dataChart {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+    background-color: #FAFAFA;
+    border-radius: 5px;
+}
+
+#page-app .logs-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 5px;
+    flex: 0 0 200px;
+    min-height: 24px;
+    max-height: 200px;
+    overflow: hidden;
+    height: 100%;
+    min-height: 0;
+}
+
+#page-app .analysis-content {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    white-space: normal !important;
+    /* Override log-content pre-wrap */
+}
+
+#page-app .analysis-group {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+#page-app .analysis-group:last-child {
+    border-bottom: none;
+}
+
+#page-app .analysis-group h5 {
+    margin: 4px 0 4px 0;
+    font-size: 0.85rem;
+    color: #555;
+    font-weight: 600;
+}
+
+#page-app .analysis-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    margin-bottom: 0px !important;
+    line-height: 1.1 !important;
+    padding: 0 !important;
+    min-height: 0 !important;
+    /* Force no minimum height */
+}
+
+#page-app .analysis-label {
+    color: #666;
+}
+
+#page-app .analysis-value {
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    color: #333;
+}
+
+#page-app .analysis-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #999;
+    font-style: italic;
+    font-size: 0.75rem;
+    text-align: center;
+    padding: 8px;
+}
+
+#page-app .log-section {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+#page-app .log-section.collapsed .log-body {
+    display: none;
+}
+
+#page-app .logs-container.all-collapsed {
+    flex: 0 0 auto !important;
+    max-height: none !important;
+    height: auto !important;
+}
+
+#page-app .log-section h4.log-toggle {
+    cursor: pointer;
+    user-select: none;
+}
+
+#page-app .log-section h4.log-toggle:hover {
+    color: #2196F3;
+}
+
+#page-app .log-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
+#page-app .log-section h4 {
+    margin: 0 0 3px 0;
+    color: #555;
+    font-size: 0.65rem;
+    padding-bottom: 2px;
+    border-bottom: 1px solid #EAEAEA;
+    flex-shrink: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#page-app .log-content {
+    flex: 1;
+    overflow-y: auto;
+    background: #FDFDFD;
+    border: 1px solid #EAEAEA;
+    border-radius: 4px;
+    padding: 4px 6px;
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    line-height: 1.3;
+    color: #333;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    min-height: 0;
+}
+
+/* =================================================================== */
+/* Status LED Indicator                                                */
+/* =================================================================== */
+.status-led {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #ccc;
+    flex-shrink: 0;
+}
+
+.status-led.connected {
+    background: #4CAF50;
+}
+
+.status-led.disconnected {
+    background: #f44336;
+}
+
+.status-led.connecting {
+    background: #FFC107;
+}
+
+.status-led.receiving {
+    background: #4CAF50;
+    animation: ledPulse 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes ledPulse {
+    from { opacity: 1; box-shadow: 0 0 4px #4CAF50; }
+    to   { opacity: 0.4; box-shadow: 0 0 8px #4CAF50; }
+}
+
+/* =================================================================== */
+/* Toast Notifications                                                 */
+/* =================================================================== */
+.toast-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 8px;
+    pointer-events: none;
+}
+
+.toast {
+    padding: 10px 18px;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 0.85rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    pointer-events: auto;
+    animation: toastSlideIn 0.3s ease-out;
+    max-width: 350px;
+    word-wrap: break-word;
+}
+
+.toast.toast-hide {
+    animation: toastSlideOut 0.3s ease-in forwards;
+}
+
+.toast-info {
+    background: #2196F3;
+}
+
+.toast-warn {
+    background: #FF9800;
+}
+
+.toast-error {
+    background: #f44336;
+}
+
+@keyframes toastSlideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to   { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes toastSlideOut {
+    from { transform: translateX(0); opacity: 1; }
+    to   { transform: translateX(100%); opacity: 0; }
+}
+/* ── 실시간 센서값 게이지 대시보드 (데이터 분석 패널 상단) ───────────────── */
+.gauge-dash {
+    display: grid;
+    /* ★항상 2개/줄로 고정. auto-fit 을 쓰면 시리즈가 1개일 때 열이 하나로 합쳐지며
+       사이드바 폭 전체를 차지해 게이지가 거대해진다(2026-07-27 실제 증상). */
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4px;
+    max-height: 268px;      /* 2줄(센서 4개)까지 보이고 그 이상만 스크롤 */
+    overflow-y: auto;
+}
+/* 시리즈가 아직 없으면 제목만 남은 빈 상자가 되므로 섹션째 숨긴다 */
+.gauge-dash:empty { display: none; }
+.section:has(> .gauge-dash:empty) { display: none; }
+
+.gauge-cell {
+    background: #fafcfd;
+    border: 1px solid #e3eaee;
+    border-radius: 6px;
+    padding: 3px 2px 2px;
+    text-align: center;
+    min-width: 0;
+}
+/* max-width 상한이 없으면 열이 넓어질 때 게이지가 따라 커진다 */
+.gauge-svg { width: 100%; max-width: 118px; height: auto; display: block; margin: 0 auto; }
+
+.gauge-track { fill: none; stroke: #e0e6ea; stroke-width: 9; stroke-linecap: round; }
+.gauge-fill  { fill: none; stroke-width: 9; stroke-linecap: round; transition: stroke-dasharray 0.1s linear; }
+/* 바늘은 transform 만 바뀌므로 리플로우가 없다 */
+.gauge-needle { transition: transform 0.1s linear; }
+
+.gauge-value {
+    text-anchor: middle;
+    font-size: 14px;
+    font-weight: 700;
+    fill: #234;
+    font-family: 'Consolas', 'Menlo', monospace;
+}
+.gauge-tick { font-size: 8px; fill: #8a97a0; }
+
+.gauge-name {
+    font-size: 0.68rem;
+    color: #556;
+    margin-top: 1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
