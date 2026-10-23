@@ -1,0 +1,1 @@
+(self.webpackChunkGUI=self.webpackChunkGUI||[]).push([[1021,3402,5783,8164],{91021:(n,e,t)=>{const s=t(68251),o=function(){const n=s.setup()||{};return/^ko(\b|-)/i.test(String(n.locale||""))};n.exports={isKoreanUi:o,koOrEnglish:function(n,e){return o()?n:e}}}}]);
