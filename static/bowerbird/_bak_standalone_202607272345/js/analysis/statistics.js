@@ -1,0 +1,1 @@
+export function calculateBasicStats(t){if(!t||0===t.length)return{count:0,min:0,max:0,mean:0,stdDev:0};const n=t.length;let e=1/0,c=-1/0,o=0;for(let a=0;a<n;a++){const n=t[a];n<e&&(e=n),n>c&&(c=n),o+=n}const a=o/n;let s=0;for(let e=0;e<n;e++){const n=t[e]-a;s+=n*n}return{count:n,min:e,max:c,mean:a,stdDev:Math.sqrt(s/n)}}
