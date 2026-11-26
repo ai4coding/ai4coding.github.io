@@ -1,0 +1,551 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   BowerBird PRO — ★브릭셀AI 임베드 전용본 (2026-07-27 포크)
+
+   독립(standalone) 배포본은 https://bowerbird-pro.github.io/ 쪽이 정본이다.
+   이 사본은 에디터의 "차트 창 열기" 블록이 여는 **팝업 전용**이라,
+   임베드에서 쓸 수 없거나 의미가 없는 기능을 코드째 들어냈다:
+     - 시리얼/BLE 직접 연결(core/serial.js·core/ble.js)  → 데이터는 부모 창의
+       postMessage(BRIXEL_*)로만 들어온다
+     - 시작/일시정지/정지 버튼          → 블록이 제어한다
+     - 센서 개수·이름·알람 입력 UI      → BRIXEL_CONFIG 가 이름을 준다
+     - 언어 선택 드롭다운               → ?lang= 으로 에디터 로케일을 받는다
+     - 세션 복구(localStorage) 프롬프트  → 팝업에선 방해만 된다
+   되살릴 일이 있으면 백업 `_bak_standalone_202607272345/` 를 참고할 것.
+   ═══════════════════════════════════════════════════════════════════════════ */
+import { loadLanguage, languages, translate, updatePageText, getLanguage, resolveLang } from './utils/i18n.js';
+import { logMessage, logDataMessage, downloadCSV, handleVisibilityChange, flushLogBuffer, showToast, filterLogLines } from './utils/helpers.js';
+import * as ChartHandler from './visualization/chart-handler.js';
+import * as GaugeDash from './visualization/gauge-dash.js';
+import { initAnalysisUI, resetCalculusButtons } from './analysis/analysis-ui.js';
+import { ScienceOnUploader, SON_TYPES, sonTypeLabel } from './core/science-on.js';
+
+// --- State ---
+let isLogging = false;
+let isPaused = false;
+let csvData = [];
+let sensorNames = [];
+let animationFrameId = null;
+let csvChunkIndex = 0;
+let sensorAutoDetected = false;
+let perfTimeOrigin = 0; // performance.now() reference for high-res timing
+/* 부모가 보내는 BRIXEL_DATA 의 구분자. 확장 4종(dsl_esp32·uno·mini·mabit)이 콤마로 보낸다.
+   예전엔 화면의 '데이터 구분자' 드롭다운을 읽었는데, 그 UI 는 임베드 전용본에서 사라졌다. */
+const DELIMITER = ',';
+// --- 지능형 과학실 ON 전송 (차트값 실시간 업로드) ---
+const sonUploader = new ScienceOnUploader();
+let sonActive = false;          // 전송 중 여부(토글)
+let sonTypes = [];              // 시리즈별 선택된 물리량 코드
+let sonLatestValues = null;     // 최신 프레임 값(processDataLine 이 저장)
+let sonValuesDirty = false;     // 마지막 전송 이후 새 값이 왔는지
+let sonSendInterval = null;     // 1초 전송 타이머(플랫폼 초 단위)
+
+// --- Constants ---
+const MAX_CSV_ROWS = 500000;
+
+// --- UI Elements ---
+const ui = {
+    viewModeButtons: document.querySelectorAll('[data-view-mode]'),
+    yAxisMinInput: document.getElementById('yAxisMin'),
+    yAxisMaxInput: document.getElementById('yAxisMax'),
+    logSearchInput: document.getElementById('logSearch'),
+    sonModumCode: document.getElementById('sonModumCode'),
+    sonToggleBtn: document.getElementById('sonToggleBtn'),
+    sonStatus: document.getElementById('sonStatus'),
+    sonTypeRows: document.getElementById('sonTypeRows')
+};
+
+document.addEventListener('DOMContentLoaded', async () => {
+    // Resolve the UI language and LOAD its strings BEFORE anything logs, so early logs
+    // (e.g. logChartInit inside initializeChart) are localized and timestamped in the
+    // right locale instead of leaking the raw key + Korean time.
+    // - Opened from the editor (?lang=<editor locale>): use that language if BowerBird
+    //   supports it (21 langs), otherwise fall back to English — never Korean — so the
+    //   editor languages BowerBird lacks (~65 of 86) get a sensible international default.
+    // - Opened standalone (no ?lang): last manual choice > browser language > English.
+    const rawLang = new URLSearchParams(location.search).get('lang');
+    let langToLoad;
+    if (rawLang) {
+        langToLoad = resolveLang(rawLang) || 'en';
+    } else {
+        const savedLang = localStorage.getItem('selectedLanguage');
+        const browserLang = navigator.language.split('-')[0];
+        langToLoad = savedLang || (languages[browserLang] ? browserLang : 'en');
+    }
+    await loadLanguage(langToLoad); // sets currentTranslations/currentLang (no DOM/chart touch)
+
+    ChartHandler.initializeChart('dataChart');
+    initAnalysisUI();
+
+    // Apply the loaded language to the DOM + chart (needs the chart/UI to exist).
+    await changeLanguage(langToLoad);
+
+    setupEventListeners();
+    // 부모가 BRIXEL_CONFIG 로 실제 이름을 주기 전까지 쓸 기본 2계열(예전 '센서 개수' 기본값과 동일).
+    applySensorNames(defaultSensorNames(2));
+    setupEmbedBridge();
+    setupScienceOn();
+    logMessage('logAppInit');
+});
+
+/** 번역된 기본 이름("센서 1", "센서 2" …)을 n개 만든다. */
+function defaultSensorNames(n) {
+    const label = translate('sensorDefaultName') || 'Sensor';
+    return Array.from({ length: n }, (_, i) => `${label} ${i + 1}`);
+}
+
+/**
+ * 시리즈 이름을 확정하고 차트·게이지·과학실ON 행을 그에 맞춘다.
+ * 예전 updateSensorInputs() 를 대체한다 — 그 함수는 화면의 '센서 개수/이름/알람' 입력칸을
+ * 다시 그리는 게 본업이었는데, 임베드 전용본에는 그 입력칸 자체가 없다.
+ */
+function applySensorNames(names) {
+    if (!Array.isArray(names) || !names.length) return;
+    sensorNames = names.slice();
+    ChartHandler.updateChartDatasets(sensorNames);
+    GaugeDash.buildGauges(sensorNames);
+    updateSonTypeRows();
+    updateViewModeButtons();
+}
+
+// 지금 적용된 보기 모드를 표시하고, 좌우 Y축은 계열이 2개일 때만 누를 수 있게 한다.
+// Y min/max 수동 입력은 겹쳐 보기에서만 쓴다. (독립판 bowerbird-pro V3 와 같은 기능 — 2026-10-19)
+function updateViewModeButtons() {
+    const mode = ChartHandler.getViewMode();
+    const dualOk = ChartHandler.canUseDualAxis();
+    const effective = (mode === 'dual' && !dualOk) ? 'split' : mode;
+    ui.viewModeButtons.forEach(btn => {
+        const m = btn.getAttribute('data-view-mode');
+        btn.classList.toggle('active', m === effective);
+        if (m === 'dual') btn.disabled = !dualOk;
+    });
+    const manual = effective === 'overlay';
+    [ui.yAxisMinInput, ui.yAxisMaxInput].forEach(input => {
+        if (!input) return;
+        input.disabled = !manual;
+        input.closest('label').style.opacity = manual ? '' : '0.4';
+    });
+}
+
+async function changeLanguage(langCode) {
+    const translations = await loadLanguage(langCode);
+    if (translations) {
+        updatePageText(translations);
+        ChartHandler.updateChartDatasets(sensorNames); // Refresh legend if needed? No, just names.
+        ChartHandler.updateChartTranslations(translations, langCode);
+        updateSonTypeRows();  // 물리량 드롭다운/버튼 라벨을 새 언어로
+    }
+}
+
+function setupEventListeners() {
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    // ※연결·시작/정지·센서개수·언어 셀렉터 리스너는 임베드 전용본에서 제거됨
+    //   (해당 UI 가 없고, 로깅 시작/정지는 부모의 BRIXEL_START/STOP 이 담당한다).
+
+    // Chart Export
+    const btnExportChart = document.getElementById('btnExportChart');
+    if (btnExportChart) {
+        btnExportChart.addEventListener('click', () => ChartHandler.exportChartImage());
+    }
+
+    // CSV Import
+    const csvFileInput = document.getElementById('csvFileInput');
+    const btnImportCSV = document.getElementById('btnImportCSV');
+    if (btnImportCSV && csvFileInput) {
+        btnImportCSV.addEventListener('click', () => csvFileInput.click());
+        csvFileInput.addEventListener('change', (e) => {
+            if (e.target.files[0]) {
+                importCSV(e.target.files[0]);
+                e.target.value = ''; // Reset for re-import
+            }
+        });
+    }
+
+    // CSV Export
+    const btnExportCSV = document.getElementById('btnExportCSV');
+    if (btnExportCSV) {
+        btnExportCSV.addEventListener('click', () => {
+            if (csvData.length > 1) {
+                downloadCSV(csvData, sensorNames);
+            } else {
+                showToast(translate('noDataToExport') || '저장할 데이터가 없습니다.', 'warn');
+            }
+        });
+    }
+
+    // Zoom Buttons
+    document.querySelectorAll('.chart-controls button[data-zoom]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const zoom = e.target.getAttribute('data-zoom');
+            ChartHandler.setZoomLevel(zoom);
+
+            // Update active state
+            document.querySelectorAll('.chart-controls button[data-zoom]').forEach(b => b.classList.remove('active'));
+            e.target.classList.add('active');
+        });
+    });
+
+    // Keyboard: CSV 저장만 남긴다.
+    //   시작/정지/일시정지 단축키는 제거했다 — 이 창의 로깅은 블록(BRIXEL_START/STOP)이 켜고 끄는데
+    //   키보드로 따로 켜면 부모 상태와 어긋나 "차트는 도는데 블록은 멈춘" 불일치가 생긴다.
+    document.addEventListener('keydown', (e) => {
+        const tag = e.target.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+        if (e.ctrlKey && e.key === 'e') {
+            e.preventDefault();
+            if (csvData.length > 1) downloadCSV(csvData, sensorNames);
+        }
+    });
+
+    // 보기 모드 (나눠 보기 / 겹쳐 보기 / 모양 비교 / 좌우 Y축)
+    ui.viewModeButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            if (btn.disabled) return;
+            ChartHandler.setViewMode(btn.getAttribute('data-view-mode'));
+            updateViewModeButtons();
+        });
+    });
+
+    // 4-5: Y-Axis Range inputs
+    const handleYAxisRange = () => {
+        const minVal = ui.yAxisMinInput.value;
+        const maxVal = ui.yAxisMaxInput.value;
+        ChartHandler.setYAxisRange(minVal, maxVal);
+    };
+    if (ui.yAxisMinInput) ui.yAxisMinInput.addEventListener('change', handleYAxisRange);
+    if (ui.yAxisMaxInput) ui.yAxisMaxInput.addEventListener('change', handleYAxisRange);
+
+    // 4-8: Data Log Search
+    if (ui.logSearchInput) {
+        ui.logSearchInput.addEventListener('input', (e) => {
+            filterLogLines(e.target.value.trim());
+        });
+    }
+
+}
+
+// --- Data Processing ---
+function processDataLine(line) {
+    const currentTime = new Date();
+    const highResTime = performance.now();
+    // Locale-aware time for log display
+    const logTime = currentTime.toLocaleTimeString(getLanguage(), { hour12: false }) + '.' + currentTime.getMilliseconds().toString().padStart(3, '0');
+    logDataMessage(`[${logTime}] ${line}`);
+
+    // Fixed format time for CSV (always HH:MM:SS.mmm, no locale text)
+    const hh = String(currentTime.getHours()).padStart(2, '0');
+    const mm = String(currentTime.getMinutes()).padStart(2, '0');
+    const ss = String(currentTime.getSeconds()).padStart(2, '0');
+    const ms = String(currentTime.getMilliseconds()).padStart(3, '0');
+    const timeWithMs = `${hh}:${mm}:${ss}.${ms}`;
+
+    if (!isLogging || isPaused) return;
+
+    let dataPart = line.trim();
+    const upperLine = dataPart.toUpperCase();
+
+    const delimiter = DELIMITER;
+
+    // Support MCU timestamp prefix: TIMESTAMP,millis,value1,value2,...
+    let mcuTimestamp = null;
+    if (upperLine.startsWith('TIMESTAMP,') || upperLine.startsWith('TIMESTAMP' + delimiter)) {
+        const parts = dataPart.substring(10).split(delimiter);
+        mcuTimestamp = parseFloat(parts[0]);
+        dataPart = parts.slice(1).join(delimiter);
+    } else if (upperLine.startsWith('DATA,') || upperLine.startsWith('DATA' + delimiter)) {
+        dataPart = dataPart.substring(5);
+    }
+
+    try {
+        const values = dataPart.split(delimiter).map(v => parseFloat(v.trim()));
+
+        // Data validation: reject NaN, Infinity, -Infinity
+        if (values.some(v => isNaN(v) || !isFinite(v))) {
+            return logMessage('logDataWarning', { line });
+        }
+
+        // 첫 유효 데이터로 계열 수 자동 보정 — 부모가 BRIXEL_CONFIG 로 준 이름 수와
+        // 실제 값 개수가 다르면 값 개수에 맞춘다(받은 이름은 있는 만큼 유지).
+        if (!sensorAutoDetected && values.length > 0) {
+            if (values.length !== sensorNames.length) {
+                const fill = defaultSensorNames(values.length);
+                applySensorNames(sensorNames.slice(0, values.length)
+                    .concat(fill.slice(sensorNames.length)));
+                logMessage('logSensorAutoDetected', { count: values.length });
+            }
+            sensorAutoDetected = true;
+        }
+
+        // Warn if value count doesn't match expected sensor count
+        const expectedCount = sensorNames.length;
+        if (values.length !== expectedCount) {
+            logMessage('logSensorCountMismatch', { expected: expectedCount, received: values.length });
+        }
+
+        // Use MCU timestamp if available, otherwise high-res browser time
+        const timeForChart = mcuTimestamp !== null ? { mcuMs: mcuTimestamp } : currentTime;
+        ChartHandler.addDataPoint(values, timeForChart);
+
+        // 게이지 대시보드: 최신 프레임만 넘긴다(그리기는 게이지 쪽 10fps 타이머가 한다)
+        GaugeDash.pushValues(values);
+
+        // 지능형 과학실 ON: 차트에 그려지는 최신 프레임을 저장(1초 타이머가 전송)
+        sonLatestValues = values;
+        sonValuesDirty = true;
+
+        // CSV includes both elapsed seconds and absolute time
+        const elapsedSec = mcuTimestamp !== null
+            ? (mcuTimestamp / 1000).toFixed(3)
+            : ((highResTime - perfTimeOrigin) / 1000).toFixed(3);
+        // Fixed date format for CSV: YYYY-MM-DD
+        const csvDate = `${currentTime.getFullYear()}-${String(currentTime.getMonth() + 1).padStart(2, '0')}-${String(currentTime.getDate()).padStart(2, '0')}`;
+        csvData.push([csvDate, timeWithMs, elapsedSec, ...values]);
+
+        // Auto chunk export when CSV data exceeds limit
+        if (csvData.length >= MAX_CSV_ROWS) {
+            csvChunkIndex++;
+            downloadCSV(csvData, sensorNames, csvChunkIndex);
+            logMessage('logCsvChunkSaved', { chunk: csvChunkIndex });
+            csvData = [[translate('csvDate') || 'Date', translate('csvTime') || 'Time', translate('csvElapsed') || 'Elapsed(s)', ...sensorNames]];
+        }
+    } catch (error) {
+        logMessage('logDataError', { line, error: error.message });
+    }
+}
+
+// --- Logging Control ---
+function startLogging() {
+    isLogging = true;
+    isPaused = false;
+
+    csvData = [[translate('csvDate') || 'Date', translate('csvTime') || 'Time', translate('csvElapsed') || 'Elapsed(s)', ...sensorNames]];
+    csvChunkIndex = 0;
+    sensorAutoDetected = false;
+    perfTimeOrigin = performance.now();
+    ChartHandler.resetChart();
+    resetCalculusButtons();
+    GaugeDash.resetGauges();        // 눈금 범위는 세션마다 새로 잡는다
+    GaugeDash.startGaugeTimer();
+
+    if (animationFrameId) cancelAnimationFrame(animationFrameId);
+
+    function animate() {
+        ChartHandler.renderLoop();
+        if (isLogging) animationFrameId = requestAnimationFrame(animate);
+    }
+    animate();
+
+    logMessage('logStart');
+}
+
+function togglePause() {
+    isPaused = !isPaused;
+    logMessage(isPaused ? 'logPause' : 'logResume');
+}
+
+function stopLogging() {
+    isLogging = false;
+    if (animationFrameId) cancelAnimationFrame(animationFrameId);
+    animationFrameId = null;
+
+    // Flush all pending buffers before stopping
+    ChartHandler.forceFlushData();
+    ChartHandler.refreshLayout();
+    flushLogBuffer();
+    // 게이지는 마지막 값을 화면에 남긴 채 타이머만 멈춘다(유휴 시 메인스레드 점유 방지)
+    GaugeDash.stopGaugeTimer();
+
+    logMessage('logStop');
+    // ※정지 시 자동 다운로드하지 않는다 — 내보내기는 BRIXEL_EXPORT 또는 'CSV 저장하기' 버튼.
+}
+
+// --- 브릭셀AI 임베드 브리지 (?embed=1) ---
+// ESP32 데이터 사이언스 랩(scratch3_scidevice)이 window.open 으로 이 페이지를 열고
+// postMessage 로 데이터를 주입한다. 시리얼/BLE 연결 계층을 우회하고 기존 함수를 그대로 재사용.
+function setupEmbedBridge() {
+    // ※예전엔 여기서 `.embed-hide{display:none}` 을 주입했지만, 그러면 비동기 두 번 뒤라
+    //   패널이 먼저 그려졌다 사라지는 깜빡임이 있었다. 지금은 index.html <head> 가
+    //   첫 페인트 이전에 처리하고, 애초에 그 마크업 자체가 이 사본엔 없다.
+    const applyNames = (names) => applySensorNames(names);
+
+    window.addEventListener('message', (event) => {
+        const msg = event.data;
+        if (!msg || typeof msg !== 'object') return;
+        switch (msg.type) {
+        case 'BRIXEL_CONFIG':
+            applyNames(msg.sensorNames);
+            break;
+        case 'BRIXEL_START':
+            applyNames(msg.sensorNames);
+            startLogging();
+            break;
+        case 'BRIXEL_DATA':
+            if (typeof msg.line === 'string') processDataLine(msg.line);
+            break;
+        case 'BRIXEL_STOP':
+            stopLogging();
+            break;
+        case 'BRIXEL_CLEAR':
+            ChartHandler.resetChart();
+            GaugeDash.resetGauges();
+            csvData = [[translate('csvDate') || 'Date', translate('csvTime') || 'Time', translate('csvElapsed') || 'Elapsed(s)', ...sensorNames]];
+            break;
+        case 'BRIXEL_EXPORT':
+            if (csvData.length > 1) downloadCSV(csvData, sensorNames);
+            break;
+        default: break;
+        }
+    });
+
+    // 부모(scidevice)에게 준비 완료 알림 → 부모가 CONFIG/START 전송
+    try { if (window.opener) window.opener.postMessage({ type: 'BRIXEL_BOWERBIRD_READY' }, '*'); } catch (e) { /* skip */ }
+}
+
+// --- 지능형 과학실 ON 전송 (현재 차트에 그려지는 값을 재단 플랫폼으로 실시간 업로드) ---
+// 시나리오: ①차트에 데이터 출력 → ②시리즈별 물리량 선택 → ③모둠코드 입력 → ④전송 시작.
+// 그 뒤 1초마다 "현재 플로팅 중인 센서 개수"만큼 최신값이 함께 전송된다(차트는 그대로 표시).
+
+// translate()는 키 미존재 시 키 문자열 자체를 반환 → 한국어 폴백을 보장(현재 ko/en/es만 번역, 나머지는 폴백).
+function sonT(key, fallback) {
+    const v = translate(key);
+    return (v && v !== key) ? v : fallback;
+}
+
+function setupScienceOn() {
+    if (!ui.sonToggleBtn) return;
+    sonUploader.onStatus = (msg, ok) => {
+        if (!ui.sonStatus) return;
+        ui.sonStatus.textContent = msg;
+        ui.sonStatus.style.color = ok ? '#1a7a3a' : '#c0392b';
+    };
+    ui.sonToggleBtn.addEventListener('click', toggleScienceOn);
+    updateSonTypeRows();
+}
+
+// 시리즈별 물리량 선택 행 + 모둠코드 placeholder + 버튼 라벨을 현재 언어로 다시 그림.
+function updateSonTypeRows() {
+    const lang = getLanguage();
+    if (ui.sonModumCode) ui.sonModumCode.placeholder = sonT('sonModumPlaceholder', '모둠코드');
+    if (ui.sonToggleBtn) ui.sonToggleBtn.textContent = sonT(sonActive ? 'sonStopBtn' : 'sonStartBtn', sonActive ? '전송 중지' : '전송 시작');
+    const box = ui.sonTypeRows;
+    if (!box) return;
+    box.innerHTML = '';
+    for (let i = 0; i < sensorNames.length; i++) {
+        if (!sonTypes[i]) sonTypes[i] = 'TEMP';
+        const row = document.createElement('label');
+        row.style.cssText = 'display:flex; align-items:center; gap:4px; font-size:0.72rem; color:#333;';
+        const nm = document.createElement('span');
+        nm.textContent = (sensorNames[i] || `S${i + 1}`) + ':';
+        nm.style.cssText = 'flex:0 0 auto; max-width:45%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;';
+        const sel = document.createElement('select');
+        sel.style.cssText = 'flex:1; min-width:0; font-size:0.72rem; padding:2px; border:1px solid #bcd; border-radius:3px;';
+        SON_TYPES.forEach(t => {
+            const opt = document.createElement('option');
+            opt.value = t.code;
+            opt.textContent = sonTypeLabel(t.code, lang);
+            if (t.code === sonTypes[i]) opt.selected = true;
+            sel.appendChild(opt);
+        });
+        const idx = i;
+        sel.addEventListener('change', (e) => { sonTypes[idx] = e.target.value; });
+        row.appendChild(nm);
+        row.appendChild(sel);
+        box.appendChild(row);
+    }
+    sonTypes.length = sensorNames.length;   // 잉여 항목 잘라냄
+}
+
+async function toggleScienceOn() {
+    if (sonActive) {                 // ── 전송 중지 ──
+        sonActive = false;
+        if (sonSendInterval) { clearInterval(sonSendInterval); sonSendInterval = null; }
+        ui.sonToggleBtn.textContent = sonT('sonStartBtn', '전송 시작');
+        ui.sonToggleBtn.classList.remove('btn-stop'); ui.sonToggleBtn.classList.add('btn-start');
+        await sonUploader.stop();
+        return;
+    }
+    // ── 전송 시작 ──
+    const code = ((ui.sonModumCode && ui.sonModumCode.value) || '').trim();
+    if (!code) {
+        if (ui.sonStatus) { ui.sonStatus.textContent = sonT('sonNeedModum', '모둠코드를 입력하세요.'); ui.sonStatus.style.color = '#c0392b'; }
+        return;
+    }
+    sonUploader.setModumCode(code);
+    ui.sonToggleBtn.disabled = true;
+    const ok = await sonUploader.start();
+    ui.sonToggleBtn.disabled = false;
+    if (!ok) return;                 // 실패 메시지는 onStatus 가 표시
+    sonActive = true;
+    sonValuesDirty = false;
+    ui.sonToggleBtn.textContent = sonT('sonStopBtn', '전송 중지');
+    ui.sonToggleBtn.classList.remove('btn-start'); ui.sonToggleBtn.classList.add('btn-stop');
+    // 플랫폼은 초 단위 최소 간격 → 1초마다 최신 프레임 전송(차트는 30fps 그대로, 새 값 없으면 스킵).
+    sonSendInterval = setInterval(() => {
+        if (!sonActive || !sonLatestValues || !sonValuesDirty) return;
+        sonValuesDirty = false;
+        const series = sonLatestValues.map((v, i) => ({
+            type: sonTypes[i] || 'UVAL',
+            name: sensorNames[i] || `S${i + 1}`,
+            value: v
+        }));
+        sonUploader.sendFrame(series);
+    }, 1000);
+}
+
+// --- CSV Import ---
+function importCSV(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const text = e.target.result;
+        const lines = text.split('\n').filter(l => l.trim());
+        if (lines.length < 2) return logMessage('logImportEmpty');
+
+        // Parse header
+        const header = lines[0].split(',').map(h => h.trim());
+        // Detect sensor columns: skip Date, Time, Elapsed(s) if present
+        let dataStartCol = 0;
+        const importedNames = [];
+        for (let i = 0; i < header.length; i++) {
+            const h = header[i].toLowerCase();
+            if (h === 'date' || h === 'time' || h.startsWith('elapsed')) {
+                dataStartCol = i + 1;
+            } else {
+                importedNames.push(header[i]);
+            }
+        }
+
+        if (importedNames.length === 0) {
+            // No header detected — treat all columns as data
+            dataStartCol = 0;
+            const firstRow = lines[1].split(',');
+            for (let i = 0; i < firstRow.length; i++) {
+                importedNames.push(`Sensor ${i + 1}`);
+            }
+        }
+
+        // 불러온 헤더로 계열 이름 확정(차트·게이지·과학실ON 행이 따라온다)
+        applySensorNames(importedNames);
+
+        // Reset chart and load data
+        ChartHandler.resetChart();
+        resetCalculusButtons();
+
+        let pointCount = 0;
+        for (let row = 1; row < lines.length; row++) {
+            const cols = lines[row].split(',').map(c => c.trim());
+            const values = cols.slice(dataStartCol).map(v => parseFloat(v));
+            if (values.some(v => isNaN(v) || !isFinite(v))) continue;
+
+            // Use row index as elapsed time if no elapsed column
+            const elapsed = dataStartCol >= 3 ? parseFloat(cols[2]) : (row - 1) * 0.1;
+            const fakeTime = new Date(Date.now() + elapsed * 1000);
+            ChartHandler.addDataPoint(values, fakeTime);
+            pointCount++;
+        }
+
+        ChartHandler.forceFlushData();
+        ChartHandler.refreshLayout();
+        logMessage('logImportSuccess', { count: pointCount, sensors: importedNames.length });
+    };
+    reader.readAsText(file);
+}
+

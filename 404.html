@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko">
+<!--
+  없는 주소에 보여 주는 페이지. 2026-11-23
+  ★이 파일이 사이트 맨 위에 있어야 Cloudflare Pages 가 없는 주소에 «진짜 404» 를 준다.
+    없으면 한 페이지짜리 앱으로 보고 어느 주소에나 첫 화면(index.html)을 200 으로 돌려준다 →
+    «우리 서버에 없으면 다른 곳에서 받기» 코드(모델·wasm)가 그 HTML 을 파일로 읽으려다 실패한다.
+  편집기 코드를 싣지 않는다(작게 · 빨리).
+-->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>페이지를 찾을 수 없습니다 - 브릭셀AI</title>
+  <style>
+    body { margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif; background: #f4fbfd; color: #1f3a44; }
+    main { text-align: center; padding: 24px; }
+    h1 { font-size: 22px; margin: 0 0 8px; }
+    p { margin: 4px 0; color: #4a6670; }
+    a { display: inline-block; margin-top: 18px; padding: 10px 22px; border-radius: 8px;
+      background: #0fa3bf; color: #fff; text-decoration: none; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>페이지를 찾을 수 없습니다</h1>
+    <p>주소가 바뀌었거나 없는 파일입니다.</p>
+    <p lang="en">This page could not be found.</p>
+    <a href="/">브릭셀AI 열기 / Open BrixelAI</a>
+  </main>
+</body>
+</html>

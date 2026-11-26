@@ -1,0 +1,140 @@
+# BrixelAI (브릭셀AI)
+
+> BrixelAI (Korean: 브릭셀AI, also written "Brixel AI") is a free, web-based block-coding platform for learning artificial intelligence, coding and robotics. It is built on Scratch 3.0 and runs in the browser with no installation and no account. Students snap blocks together to use face, hand and pose recognition, train their own image, sound and text models, try reinforcement learning, analyse data, and control real hardware such as Arduino, ESP32, micro:bit and Raspberry Pi Pico boards, robot cars and robot arms.
+
+- Official address: https://ai.brixel.kr/
+- Previous address (same editor, still reachable): https://ai4coding.github.io/
+- Made by: Brixel (브릭셀) — https://brixel.gorillacell.kr/
+- Price: free. No sign-up is needed to use the editor.
+- Runs on: desktop Chrome or Edge (Web Serial and Web Bluetooth are used for hardware). Chromebooks are supported.
+- Interface languages: about 80 languages. Korean and English are the primary languages.
+- Audience: elementary, middle and high school students and their teachers.
+- Camera-based recognition (faces, hands, poses, objects) is computed inside the browser, on the computer in front of the student.
+
+## Names — how "Brixel" and "BrixelAI" differ
+
+- **Brixel (브릭셀)** is the brand and the education site with lessons, manuals and teaching kits: https://brixel.gorillacell.kr/
+- **BrixelAI (브릭셀AI)** is the block-coding editor described in this file: https://ai.brixel.kr/
+- "Brixel Editor (브릭셀 에디터)" is a different product — a block editor that generates Arduino C code: https://brixel-editor.github.io/
+
+## What you can do in BrixelAI
+
+- Recognise faces, hands, body poses, objects, colours, QR codes, text and speech with the webcam and microphone, and use the results as block values.
+- Train your own models in the browser: image, sound, text and pose classifiers, k-nearest neighbours, decision trees, regression, clustering.
+- Follow a full machine-learning workflow (data, training, evaluation, fairness, model sharing) with the MLOps cards.
+- Learn reinforcement learning and imitation learning with simulators, then run the result on a real robot car or robot arm (Sim2Real).
+- Control hardware from blocks over USB (Web Serial), Bluetooth or Wi-Fi, and install board firmware from the browser.
+- Run digital science experiments with sensors and live charts.
+- Use generative AI as a block (cloud models with the user's own key, or a local model on the PC).
+- Work with data: spreadsheets, charts, maps, weather, compression, encryption; and classic algorithms: sorting, search, rule-based reasoning.
+- Code together in real time ("Pair" coding), use a phone as a controller or camera, and share projects to the K12 Project Hub.
+
+## Extension Center — 19 categories, about 100 extension cards
+
+Each card adds a palette of blocks. Names are given in English with the Korean name in parentheses.
+
+### 1. Face Recognition (얼굴 인식)
+
+Face Sensing (얼굴 감지) · Face Feature Recognition (얼굴 특징 인식) · Face Identification (얼굴 구분 인식) · Face Expression Learning (얼굴 표정 학습) · Face Tracking (얼굴 추적)
+
+### 2. Hand Recognition (손 인식)
+
+Finger Counting (손가락 세기) · Hand Feature Recognition (손 특징 인식) · Hand Gesture Learning (손 제스처 학습) · Hand Tracking (손 추적)
+
+### 3. Body & Pose Recognition (몸·포즈 인식)
+
+Pose Sensing (포즈 감지) · Pose Feature Recognition (포즈 특징 인식) · Body Segmentation (Virtual Background) (바디 세그먼테이션 (가상 배경)) · Pose Shape Recognition (포즈 형태 인식) · Pose Learning (포즈 학습) · Pose Tracking (포즈 추적)
+
+### 4. Voice & Language (음성·언어)
+
+Speech to Text (STT) (음성 인식 (STT)) · Speaker ID (화자 인식) · Sound Sensing (소리 감지) · Translate (번역) · Text to Speech (텍스트 음성 변환(TTS)) · My Voice TTS (내 목소리 TTS) · Text and Number Recognition (문자숫자 인식) · Multilingual Handwriting Recognition (다국어 필기 인식)
+
+### 5. Image & Object Recognition (이미지·사물 인식)
+
+Object Learning (사물 학습) · Object Detection AI (사물 인식 AI) · AI Object Tracking (AI 객체 추적) · AI Color Region (AI 색상 영역 인식) · Smart Color Sensing (스마트 색 감지) · QR and Barcode Recognition (QR·바코드 인식) · Tag Recognition (태그 인식)
+
+### 6. Train Your Own AI Model (모델 학습)
+
+Teachable Machine Image Model (티처블 머신 이미지 모델) · Teachable Machine Pose Model (티처블 머신 포즈 모델) · Image Classifier Training (이미지 분류모델 학습) · Sound Classifier Training (소리 분류모델 학습) · Text Classifier Training (텍스트 분류모델 학습)
+
+### 7. Motion & Expression (동작·표현)
+
+Physics Engine (물리엔진) · Music (음악) · Pen (펜) · Phone Controller (핸드폰 컨트롤러) · Video Sensing (비디오 감지)
+
+### 8. Camera (카메라)
+
+ESP32-CAM Video (ESP32-CAM 비디오) · Phone Camera (핸드폰 카메라)
+
+### 9. Robotics (로보틱스)
+
+Person Follow (사람 따라가기) · Lane Tracking (차선 추적) · Reinforcement Learning (Sim2Real) (강화학습 (Sim2Real)) · Fly Electronic Brain Lab (초파리 전뇌 실험실) · Behavior Cloning (모방학습) · 6-Axis Robot Arm (6축 로봇팔)
+
+### 10. Communication (통신)
+
+Web Serial (Wired) (웹 시리얼 (유선)) · Web Bluetooth (Wireless) (웹 블루투스 (무선)) · Wi-Fi (Wireless) (와이파이 (무선)) · Internet Messages & Alerts (인터넷 메시지·알림)
+
+### 11. Physical Computing (피지컬 컴퓨팅)
+
+Arduino_Uno (아두이노_우노) · Arduino - Rich Shield (아두이노-리치실드) · Mega Super Rich Board (메가 슈퍼리치 보드) · ma:bit V2 · ESP32 Full Kit (ESP32 풀키트) · Raspberry Pi Pico 2 W (라즈베리파이 피코 2 W)
+
+### 12. Digital Science Experiments (디지털 과학실험)
+
+Data Science Lab (DSLmini) (데이터 사이언스 랩(DSLmini)) · Data Science Lab (Uno) (데이터 사이언스 랩(우노)) · Data Science Lab (micro:bit) (데이터 사이언스 랩(마이크로비트)) · Data Science Lab (ESP32) (데이터 사이언스 랩(ESP32))
+
+### 13. Physical AI (피지컬 AI)
+
+Uno Car · Ma:bit Car · ESP Car · Brixel Car (STS3215) (브릭셀카(STS3215)) · Brixel Car ESP32 (STS3215) (브릭셀카 ESP32(STS3215)) · Brixel Car Simulator (브릭셀카 시뮬레이터) · 5-Axis Arm (Arduino) (5축 암 (아두이노)) · SO-ARM101 Gripper Robot Arm (SO-ARM101 집게로봇팔) · SO-ARM101 Leader Robot Arm (SO-ARM101 리더로봇팔) · SO-ARM101 Simulator/RL (SO-ARM101 시뮬레이터/강화학습)
+
+### 14. Generative AI (생성형 AI)
+
+AI Engine · Internet (AI 엔진 · 인터넷) · AI Engine · My PC (AI 엔진 · 내 PC)
+
+### 15. Data (데이터)
+
+Data Science (데이터 사이언스) · Google Sheet (구글 시트) · Data Visualization (데이터 시각화) · Data Compression (데이터 압축) · Encryption and Security (암호화·정보보안) · Real-time Weather (Open-Meteo) (실시간 날씨 (Open-Meteo)) · Map (지도)
+
+### 16. Search & Reasoning (탐색과 추론)
+
+Search Algorithms (탐색 알고리즘) · Rule-based Reasoning (규칙기반 추론) · Sorting Algorithms (정렬 알고리즘)
+
+### 17. Machine Learning Algorithms (머신러닝 알고리즘)
+
+Number Predictor (Linear) Training (숫자 예측모델(직선) 학습) · Number Predictor (Curve) Training (숫자 예측모델(곡선) 학습) · Number Classifier (Probability) Training (숫자 분류모델(확률) 학습) · Number Classifier (Rules) (숫자 분류(규칙)) · Number Classifier (Neighbor) (숫자 분류(이웃)) · Number Classifier (Boundary) (숫자 분류(경계)) · Number Clustering (숫자 군집화)
+
+### 18. Machine Learning Operations (MLOps) (머신러닝 오퍼레이션 (MLOps))
+
+1. Data Pipeline (1. 데이터 파이프라인) · 2. Media Pipeline (2. 미디어 파이프라인) · 3. AutoML · 4. Neural Network Builder (4. 신경망 빌더) · 5. Experiment Tracking (5. 실험 추적) · 6. Model Evaluation (6. 모델 평가) · 7. Responsible AI (7. 책임감 있는 AI) · 8. Model Hub (8. 모델 허브)
+
+### 19. Third-party Hardware (서드파티 하드웨어)
+
+Third-party Hardware Extensions (서드파티 하드웨어 확장)
+
+## Documentation
+
+- [Extension manual (every extension card, block by block)](https://brixel.gorillacell.kr/10_docs/01_manual/04_extension/)
+- [Example projects (.sb3, open directly in BrixelAI)](https://brixel.gorillacell.kr/10_docs/10_example/)
+- [Lessons and teaching materials (elementary, middle school, topics)](https://brixel.gorillacell.kr/10_docs/)
+- [Physical AI lessons (boards, cars, robot arms)](https://brixel.gorillacell.kr/10_docs/07_physical_ai/)
+- [Digital science experiments (sensor labs)](https://brixel.gorillacell.kr/10_docs/09_science/)
+- [Hardware and device manuals](https://brixel.gorillacell.kr/10_docs/01_manual/)
+- [K12 Project Hub (students and teachers share projects)](https://brixel.gorillacell.kr/11_k12hub/)
+- [Downloads (companion programs such as the camera agent)](https://brixel.gorillacell.kr/09_download/)
+- [Guide for third-party hardware makers](https://brixel.gorillacell.kr/17_dev_guide/)
+- [About the Brixel ecosystem](https://brixel.gorillacell.kr/01_about/)
+- [Terms of service](https://brixel.gorillacell.kr/15_legal/terms.html)
+- [Privacy policy](https://brixel.gorillacell.kr/15_legal/privacy.html)
+
+## Useful addresses
+
+- Open the editor in English: https://ai.brixel.kr/?locale=en
+- Open the editor in Korean: https://ai.brixel.kr/?locale=ko
+- Open a shared project file: https://ai.brixel.kr/?project_url=<address of an .sb3 file>
+- Deployed version number: https://ai.brixel.kr/version.json
+
+## 한국어 요약
+
+브릭셀AI는 인공지능·코딩·로보틱스를 블록코딩으로 배우는 무료 웹 편집기입니다. 스크래치 3.0을 바탕으로 만들었고, 설치나 가입 없이 크롬·엣지 브라우저에서 바로 씁니다. 웹캠·마이크로 얼굴·손·자세·사물·음성을 인식하고, 이미지·소리·텍스트 분류 모델을 직접 학습시키고, 강화학습과 데이터 분석을 해 보고, 아두이노·ESP32·마이크로비트·라즈베리파이 피코 보드와 자동차·로봇팔을 블록으로 제어합니다.
+
+- 공식 주소: https://ai.brixel.kr/ (옛 주소 https://ai4coding.github.io/ 도 같은 편집기입니다)
+- «브릭셀»은 교육자료·교구를 만드는 브랜드와 그 사이트(https://brixel.gorillacell.kr/)이고, «브릭셀AI»는 이 블록코딩 편집기입니다.
+- 확장 매뉴얼: https://brixel.gorillacell.kr/10_docs/01_manual/04_extension/ · 예제: https://brixel.gorillacell.kr/10_docs/10_example/ · 수업 자료: https://brixel.gorillacell.kr/10_docs/

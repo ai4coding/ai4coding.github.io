@@ -1,0 +1,9 @@
+# BrixelAI (브릭셀AI) — https://ai.brixel.kr/
+# 검색 색인과 AI 검색 답변에 이 사이트의 내용을 써도 됩니다.
+# AI 가 읽기 좋은 소개 문서: https://ai.brixel.kr/llms.txt
+
+User-agent: *
+Content-Signal: search=yes, ai-input=yes
+Allow: /
+
+Sitemap: https://ai.brixel.kr/sitemap.xml

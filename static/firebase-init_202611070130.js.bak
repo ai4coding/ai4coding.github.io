@@ -1,0 +1,10 @@
+// Firebase 초기화(웹 공개 설정값 — 비밀이 아니다). index.ejs 의 defer 스크립트 순서상 firebase-app/auth 뒤, gui.js 앞에 실행된다.
+// 예전엔 index.ejs 안 인라인 <script> 였다(2026-09-20 첫 로딩 개선으로 분리). 값을 바꾸면 여기만 고친다.
+firebase.initializeApp({
+    apiKey: 'AIzaSyAI-u8rBNkNpsiZ-bUUoOenjS2B3xIuCWs',
+    authDomain: 'brixel-k12hub.firebaseapp.com',
+    projectId: 'brixel-k12hub',
+    storageBucket: 'brixel-k12hub.firebasestorage.app',
+    messagingSenderId: '621824381671',
+    appId: '1:621824381671:web:d96283050031d73c430842'
+});

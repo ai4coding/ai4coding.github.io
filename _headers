@@ -1,0 +1,27 @@
+# Cloudflare Pages 응답 헤더 규칙 (GitHub Pages 는 이 파일을 무시한다). 2026-11-23 다시 씀.
+#
+# 규칙 1 — «1년 보관»(immutable)은 이름에 내용 해시가 든 폴더에만 붙인다.
+#   chunks/        webpack 청크 (이름.해시.js)
+#   assets/        스프라이트·배경·소리 (md5.확장자)
+#   static/assets/ webpack 이 뽑은 그림 (이름.해시.확장자)
+#   그 밖(gui.js · sw.js · index.html · version.json · 워커 · static/ 의 펌웨어·vendor·시작 작품)은
+#   이름이 그대로인 채 내용이 바뀐다 → 헤더를 붙이지 않는다(Cloudflare 기본 = 매번 «바뀌었나» 확인, 같으면 304).
+#   옛 판은 /*.js 와 /static/* 에 1년을 붙여, 그대로 올리면 새 배포가 1년 동안 학생에게 가지 않았다.
+#
+# 규칙 2 — 같은 주소에 두 규칙이 같은 헤더를 붙이면 값이 쉼표로 이어진다. Cache-Control 을 /* 에 두지 말 것.
+#
+# 규칙 3 — Access-Control-Allow-Origin: * 는 GitHub Pages 가 기본으로 주던 것이다(다른 출처에서 우리 파일을 읽는 곳이 있다).
+#
+# 올리기 전 검사 = node scripts/check-cf-pages.js (이 파일의 immutable 규칙이 해시 없는 파일을 잡으면 멈춘다)
+
+/*
+  Access-Control-Allow-Origin: *
+
+/chunks/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/static/assets/*
+  Cache-Control: public, max-age=31536000, immutable
